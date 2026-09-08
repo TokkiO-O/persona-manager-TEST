@@ -325,7 +325,25 @@ function valuesCompatible(aRaw, bRaw, aCanon, bCanon) {
     const lb = looseVal(bRaw);
     if (!la || !lb) return false;
     if (la === lb) return true;
-    if (la.length >= 2 && lb.length >= 2 && (la.includes(lb) || lb.includes(la))) return true;
+    // 短标签（≤3字）禁止「被更长句包含」——避免 温柔 ⊂ 温柔清新的邻家风、黑色 ⊂ 黑色长发 在错误场景被放大
+    // 仅当两侧都较长且互相包含时才算
+    const shortA = [...String(aRaw)].length <= 3;
+    const shortB = [...String(bRaw)].length <= 3;
+    if (shortA || shortB) {
+        // 短对短：必须松散相等或同 canon
+        if (shortA && shortB) return la === lb || (aCanon && aCanon === bCanon);
+        // 一短一长：长串必须以短串为「完整词片段」且剩余部分是发质等可接受后缀
+        const short = shortA ? la : lb;
+        const long = shortA ? lb : la;
+        if (!long.includes(short)) return false;
+        // 允许 黑色 + 黑色长发；不允许 温柔 + 温柔清新的邻家风（后缀过长且非发型类）
+        const rest = long.replace(short, '');
+        if (!rest) return true;
+        if (/^(色)?(长发|短发|卷发|直发|微卷|齐肩|及腰)/.test(rest)) return true;
+        if (rest.length <= 2 && /发|色|瞳/.test(rest)) return true;
+        return false;
+    }
+    if (la.includes(lb) || lb.includes(la)) return true;
     // 主色相同 + 其余有重叠
     let ca = '', cb = '';
     for (const [aliases, canon] of VALUE_SYNONYMS) {
@@ -408,8 +426,8 @@ export function extractFieldValues(text) {
         [/眼睛\s*[:：]?\s*([\u4e00-\u9fffA-Za-z]{1,8})/g, 'eye'],
         [/瞳色\s*[:：]?\s*([\u4e00-\u9fffA-Za-z]{1,8})/g, 'eye'],
         [/eyes?\s*[:：]?\s*([\u4e00-\u9fffA-Za-z]{1,12})/gi, 'eye'],
-        [/发色\s*[:：]?\s*([^\s，,。；;]{1,16})/g, 'hair'],
-        [/头发\s*[:：]?\s*([^\s，,。；;]{1,16})/g, 'hair'],
+        [/发色\s*[:：]?\s*([^\s。；;]{1,24})/g, 'hair'],
+        [/头发\s*[:：]?\s*([^\s。；;]{1,24})/g, 'hair'],
         [/发型\s*[:：]?\s*([^\s，,。；;]{1,16})/g, 'hair'],
         [/hair\s*[:：]?\s*([^\n，,。；;]{1,20})/gi, 'hair'],
         [/性格\s*[:：]?\s*([^\s，,。；;]{1,12})/g, 'personality'],
@@ -455,21 +473,43 @@ export function extractSharedSnippets(aText, bText, opts = {}) {
         shared.push(s);
     };
 
+    const FIELD_LABEL = { eye: '眼睛', hair: '发色', height: '身高', weight: '体重', gender: '性别', age: '年龄', personality: '性格', style: '风格', skin: '肤色', name: '姓名' };
+    const HAIR_PARTS = ['长发', '短发', '卷发', '直发', '微卷', '齐肩', '及腰', '黑长直'];
+
     for (const fa of aFacts) {
         for (const fb of bFacts) {
             if (fa.field !== fb.field) continue;
             if (!valuesCompatible(fa.valueRaw, fb.valueRaw, fa.valueCanon, fb.valueCanon)) continue;
-            // 展示：优先较短且含中文的标签，否则取较短
             let label = fa.valueRaw;
             if (fb.valueRaw.length < label.length) label = fb.valueRaw;
-            // 纯英文 canon 时若另一侧是中文，用中文
             if (/^[a-z]+$/i.test(label) && /[\u4e00-\u9fff]/.test(fa.valueRaw + fb.valueRaw)) {
                 label = /[\u4e00-\u9fff]/.test(fa.valueRaw) ? fa.valueRaw : fb.valueRaw;
             }
-            // 带字段提示更清晰：发色/眼睛等短值
-            if (label.length <= 10 && fa.field === 'hair') label = label;
+            // 展示完整一些：两侧都有的最长公共可读串优先
+            const la = looseVal(fa.valueRaw);
+            const lb = looseVal(fb.valueRaw);
+            if (la.length >= 4 && lb.length >= 4) {
+                if (la.includes(lb)) label = fb.valueRaw;
+                else if (lb.includes(la)) label = fa.valueRaw;
+            }
             pushLabel(label);
+            // 两侧原文都推进去，方便高亮「黑色，长发」与「黑色长发」两种写法
+            if (fa.valueRaw !== label) pushLabel(fa.valueRaw);
+            if (fb.valueRaw !== label) pushLabel(fb.valueRaw);
+
+            if (fa.field === 'hair') {
+                for (const part of HAIR_PARTS) {
+                    if (String(fa.valueRaw).includes(part) && String(fb.valueRaw).includes(part)) {
+                        pushLabel(part);
+                    }
+                }
+            }
         }
+    }
+
+    // 发色部件：即使散文切分丢了「长发」，只要两侧原文都有仍标出
+    for (const part of HAIR_PARTS) {
+        if (a.includes(part) && b.includes(part)) pushLabel(part);
     }
 
     // 补充：两侧都出现的较长中文短语（>=4）且字段不冲突

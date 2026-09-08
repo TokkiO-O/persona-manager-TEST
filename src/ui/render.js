@@ -602,7 +602,7 @@ export function ensureRoot() {
                 setTimeout(() => {
                     m.classList.remove('pmp18-toc-flash');
                     m.classList.remove('pmp18-flash');
-                }, 1600);
+                }, 3200);
             });
             const inOther = matched.find(m => m.closest('.pmp18-multi-other-card, .pmp18-other-col, .pmp18-obj-card'));
             const inBase = matched.find(m => m.closest('.pmp18-multi-base-fixed, .pmp18-base-col, .pmp18-base-card'));
@@ -802,7 +802,7 @@ function handleTocJump(target) {
         if (matched.length) {
             matched.forEach(m => {
                 m.classList.add('pmp18-toc-flash');
-                setTimeout(() => m.classList.remove('pmp18-toc-flash'), 1600);
+                setTimeout(() => m.classList.remove('pmp18-toc-flash'), 3200);
             });
             // 优先滚到对象侧，再保证基准侧也在视野内
             const inOther = matched.find(m => m.closest('.pmp18-multi-other-card, .pmp18-other-col, .pmp18-obj-card, [data-side="other"]'));
@@ -818,7 +818,7 @@ function handleTocJump(target) {
     if (!sel) return;
     sel.scrollIntoView({ behavior: 'smooth', block: 'center' });
     sel.classList.add('pmp18-toc-flash');
-    setTimeout(() => sel.classList.remove('pmp18-toc-flash'), 1500);
+    setTimeout(() => sel.classList.remove('pmp18-toc-flash'), 3200);
     // Also try to highlight search matches if any
     if (state.tocQuery) {
         const q = state.tocQuery.toLowerCase();

@@ -37,7 +37,7 @@ export function renderCard(persona, all) {
         ? escapeHtml(raw.slice(0, maxLen)) + (raw.length > maxLen ? '…' : '')
         : '<span class="pmp18-muted">暂无描述</span>';
     // 内联字色：部分主题 CSS 优先级极高，仅靠 stylesheet 仍会出现白底白字
-    const ink = 'color:#1a1a1f;-webkit-text-fill-color:#1a1a1f;';
+    const ink = 'color:#1a1a1f !important;-webkit-text-fill-color:#1a1a1f !important;';
     return `
         <article class="pmp18-card ${checked ? 'is-selected' : ''} density-${state.listDensity || 'comfy'}" data-persona-id="${escapeHtml(persona.id)}" style="background:#fff;${ink}">
             <label class="pmp18-check">

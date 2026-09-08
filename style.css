@@ -2352,74 +2352,7 @@ mark.pmp18-share {
 
 
 
-/* ===== v1.9.25 UI polish (gallery card / empty / drawer / tabs) ===== */
-.pmp18-card {
-    position: relative !important;
-    display: flex !important;
-    flex-direction: column !important;
-    padding-top: 0 !important;
-    gap: 0 !important;
-}
-.pmp18-card-banner {
-    height: 56px;
-    margin: 0 0 -28px;
-    border-radius: 22px 22px 0 0;
-    background: linear-gradient(135deg, #FFB7B2 0%, #FFDAC1 55%, #C7CEEA 100%);
-    flex: 0 0 auto;
-    transition: transform .35s ease;
-}
-.pmp18-card:hover .pmp18-card-banner {
-    transform: scaleY(1.04);
-    transform-origin: top;
-}
-.pmp18-card > .pmp18-check {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 2;
-}
-.pmp18-card > .pmp18-avatar,
-.pmp18-card > img.pmp18-avatar,
-.pmp18-card .pmp18-avatar {
-    position: relative;
-    z-index: 1;
-    margin: 0 auto 6px !important;
-    width: 56px !important;
-    height: 56px !important;
-    flex-basis: 56px !important;
-    border: 3px solid #fff !important;
-    box-shadow: 0 4px 14px rgba(0,0,0,.1) !important;
-}
-.pmp18-card-main {
-    padding: 4px 14px 14px !important;
-    text-align: center;
-}
-.pmp18-card-title-row {
-    justify-content: center !important;
-    flex-wrap: wrap;
-}
-.pmp18-card-sub {
-    font-size: 11px;
-    opacity: .48;
-    margin-top: 2px;
-}
-.pmp18-card-description {
-    text-align: left !important;
-    margin-top: 8px !important;
-    font-size: 12px !important;
-    line-height: 1.45 !important;
-    max-height: 4.2em;
-    overflow: hidden;
-}
-.pmp18-card-actions {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(0,0,0,.05);
-}
-
+/* (removed gallery card polish — caused layout/contrast fights) */
 /* Tab underline indicator */
 .pmp18-tabs {
     border-bottom: 1px solid rgba(255,183,178,.12);
@@ -3141,4 +3074,114 @@ body > .pmp18-update-overlay {
     color: #1a1a1f !important;
     -webkit-text-fill-color: #1a1a1f !important;
     background: #f5f5f7 !important;
+}
+
+
+/* ========== AUTHORITATIVE LIST CARD (last wins) ========== */
+#pmp18-root .pmp18-card-grid,
+#pmp18-root .pmp18-group-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+}
+@media (min-width: 720px) {
+    #pmp18-root .pmp18-card-grid,
+    #pmp18-root .pmp18-group-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+@media (min-width: 1100px) {
+    #pmp18-root .pmp18-card-grid,
+    #pmp18-root .pmp18-group-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+#pmp18-root .pmp18-card {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(0,0,0,.08) !important;
+    background: #ffffff !important;
+    color: #1a1a1f !important;
+    -webkit-text-fill-color: #1a1a1f !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,.04) !important;
+    overflow: visible !important;
+    min-height: 72px !important;
+    isolation: isolate !important;
+}
+#pmp18-root .pmp18-card * {
+    color: inherit;
+}
+#pmp18-root .pmp18-card .pmp18-card-name,
+#pmp18-root .pmp18-card .pmp18-card-description,
+#pmp18-root .pmp18-card .pmp18-card-main {
+    color: #1a1a1f !important;
+    -webkit-text-fill-color: #1a1a1f !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+#pmp18-root .pmp18-card .pmp18-card-sub {
+    color: #5a5a63 !important;
+    -webkit-text-fill-color: #5a5a63 !important;
+    opacity: 1 !important;
+}
+#pmp18-root .pmp18-card .pmp18-card-description {
+    color: #2a2a32 !important;
+    -webkit-text-fill-color: #2a2a32 !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    max-height: 4.5em !important;
+    overflow: hidden !important;
+    display: block !important;
+}
+#pmp18-root .pmp18-card .pmp18-card-name {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    display: block !important;
+}
+#pmp18-root .pmp18-card > .pmp18-check {
+    position: static !important;
+    flex: 0 0 auto !important;
+    margin-top: 4px !important;
+}
+#pmp18-root .pmp18-card > .pmp18-avatar,
+#pmp18-root .pmp18-card .pmp18-avatar {
+    position: static !important;
+    display: block !important;
+    width: 48px !important;
+    height: 48px !important;
+    flex: 0 0 48px !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
+    border: 2px solid rgba(255,183,178,.4) !important;
+    object-fit: cover !important;
+    background: #f0f0f2 !important;
+}
+#pmp18-root .pmp18-card .pmp18-card-main {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+    display: block !important;
+}
+#pmp18-root .pmp18-card .pmp18-card-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    flex: 0 0 auto !important;
+}
+#pmp18-root .pmp18-card-banner { display: none !important; }
+
+/* 共同片段闪烁稍久一点 */
+#pmp18-root mark.pmp18-share.pmp18-toc-flash,
+#pmp18-root mark.pmp18-share.pmp18-flash,
+#pmp18-root .pmp18-toc-flash {
+    outline: 2px solid #5b8def !important;
+    background: rgba(91,141,239,.35) !important;
+    transition: background .2s ease;
 }
