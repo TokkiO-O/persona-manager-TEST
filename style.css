@@ -3185,3 +3185,21 @@ body > .pmp18-update-overlay {
     background: rgba(91,141,239,.35) !important;
     transition: background .2s ease;
 }
+
+
+/* ========== 全屏编辑（对齐 1.9.25） ========== */
+.pmp18-editor-overlay.is-fullscreen {
+    padding: 0 !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    display: flex !important;
+}
+.pmp18-editor-overlay.is-fullscreen .pmp18-editor {
+    width: 100% !important;
+    height: 100% !important;
+    height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+}

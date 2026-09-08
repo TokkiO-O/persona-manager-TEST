@@ -447,6 +447,20 @@ export function extractFieldValues(text) {
     const glued = prose.match(/性格([\u4e00-\u9fff]{1,6})/g) || [];
     for (const g of glued) push('personality', g.replace(/^性格/, ''));
 
+    // 性格后逗号分隔的特质：性格温柔，细心，慢热
+    const traitBlock = prose.match(/性格[:：]?([^。；;！!？?]{2,40})/);
+    if (traitBlock) {
+        const chunk = traitBlock[1];
+        // 在遇到下一个字段关键词前切开
+        const cut = chunk.split(/发色|头发|眼睛|瞳色|身高|体重|性别|age|hair|eyes|height/i)[0];
+        for (const part of cut.split(/[,，、/|]/)) {
+            const t = part.replace(/^性格/, '').trim();
+            if (t.length >= 1 && t.length <= 8 && /[\u4e00-\u9fff]/.test(t)) {
+                push('personality', t);
+            }
+        }
+    }
+
     return out;
 }
 
@@ -589,11 +603,32 @@ export function shouldUseFragmentMode(baseText, otherText, score) {
 
 export function highlightSnippets(text, snippets) {
     let html = escapeHtml(text);
-    const sorted = [...snippets].sort((a, b) => b.length - a.length);
+    // 短词（≤2字）不做全文替换高亮，避免「温柔」点亮「温柔清新的邻家风」
+    const sorted = [...snippets]
+        .filter(s => String(s).replace(/\s/g, '').length >= 3)
+        .sort((a, b) => b.length - a.length);
     for (const s of sorted) {
         const esc = escapeHtml(s);
         if (!esc) continue;
         html = html.split(esc).join(`<mark class="pmp18-share">${esc}</mark>`);
+    }
+    // 2字词：仅在「性格X」「- X」「X，」等边界处高亮
+    const shorts = [...snippets].filter(s => {
+        const n = String(s).replace(/\s/g, '');
+        return n.length > 0 && n.length <= 2;
+    });
+    for (const s of shorts) {
+        const esc = escapeHtml(s);
+        if (!esc) continue;
+        const patterns = [
+            new RegExp('(性格\\s*)(' + esc + ')', 'g'),
+            new RegExp('([-–—•·*]\\s*)(' + esc + ')(?=[\\s，,。；;]|$)', 'g'),
+            new RegExp('(gender\\s*[:：]\\s*)(' + esc + ')', 'gi'),
+            new RegExp('(性别\\s*[:：]?\\s*)(' + esc + ')', 'g'),
+        ];
+        for (const re of patterns) {
+            html = html.replace(re, '$1<mark class="pmp18-share">$2</mark>');
+        }
     }
     return html;
 }
