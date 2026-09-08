@@ -36,32 +36,28 @@ export function renderCard(persona, all) {
     const raw = String(persona.description || '').replace(/\s+/g, ' ').trim();
     const desc = raw
         ? escapeHtml(raw.slice(0, maxLen)) + (raw.length > maxLen ? '…' : '')
-        : '<span style="color:#888">暂无描述</span>';
-    const id = escapeHtml(persona.id);
-    const name = escapeHtml(persona.name || '未命名');
-    const subEsc = escapeHtml(sub);
-    // 名字/描述必须写死深色：主题 CSS 会把 inherit 变成白字；布局写死防止挤到右侧
+        : '<span class="pmp18-muted">暂无描述</span>';
     return `
-        <article class="pmp18-card ${checked ? 'is-selected' : ''} density-${state.listDensity || 'comfy'}" data-persona-id="${id}"
-            style="display:flex;flex-direction:row;align-items:flex-start;gap:10px;padding:12px;margin:0;width:100%;max-width:100%;box-sizing:border-box;overflow:hidden;background:#ffffff;color:#1a1a1f;border:1px solid rgba(0,0,0,.1);border-radius:14px;position:relative;">
-            <label class="pmp18-check" style="position:static;flex:0 0 auto;margin:2px 0 0 0;display:block;">
-                <input type="checkbox" data-action="select" data-id="${id}" ${checked ? 'checked' : ''}>
+        <article class="pmp18-card ${checked ? 'is-selected' : ''} density-${state.listDensity || 'comfy'}" data-persona-id="${escapeHtml(persona.id)}">
+            <label class="pmp18-check">
+                <input type="checkbox" data-action="select" data-id="${escapeHtml(persona.id)}" ${checked ? 'checked' : ''}>
             </label>
             ${renderAvatar(persona)}
-            <div class="pmp18-card-main" style="flex:1 1 0;min-width:0;overflow:hidden;color:#1a1a1f;-webkit-text-fill-color:#1a1a1f;">
-                <div class="pmp18-card-title-row" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                    <div class="pmp18-card-name" style="font-weight:700;font-size:14px;color:#1a1a1f !important;-webkit-text-fill-color:#1a1a1f !important;line-height:1.3;">${name}</div>
+            <div class="pmp18-card-main">
+                <div class="pmp18-card-title-row">
+                    <div class="pmp18-card-name" style="color:#1a1a1f;-webkit-text-fill-color:#1a1a1f">${escapeHtml(persona.name || '未命名')}</div>
                     ${statusBadge(persona, all)}
                 </div>
-                <div class="pmp18-card-sub" style="font-size:11px;color:#666 !important;-webkit-text-fill-color:#666 !important;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${subEsc}</div>
-                <div class="pmp18-card-description" style="margin-top:6px;font-size:12px;line-height:1.45;color:#333 !important;-webkit-text-fill-color:#333 !important;max-height:3.6em;overflow:hidden;word-break:break-word;">${desc}</div>
+                <div class="pmp18-card-sub" style="color:#666;-webkit-text-fill-color:#666" title="${escapeHtml(persona.title ? `备注：${persona.title}` : `ID：${persona.id}`)}">${escapeHtml(sub)}</div>
+                <div class="pmp18-card-description" style="color:#333;-webkit-text-fill-color:#333">${desc}</div>
             </div>
-            <div class="pmp18-card-actions" style="display:flex;flex-direction:column;gap:6px;flex:0 0 auto;">
-                <button type="button" class="pmp18-icon-btn" data-action="edit-full" data-id="${id}" title="编辑"><i class="fa-solid fa-pen"></i></button>
-                <button type="button" class="pmp18-icon-btn pmp18-danger-icon" data-action="delete-persona" data-id="${id}" title="删除"><i class="fa-solid fa-trash"></i></button>
+            <div class="pmp18-card-actions">
+                <button type="button" class="pmp18-icon-btn" data-action="edit-full" data-id="${escapeHtml(persona.id)}" title="编辑"><i class="fa-solid fa-pen"></i></button>
+                <button type="button" class="pmp18-icon-btn pmp18-danger-icon" data-action="delete-persona" data-id="${escapeHtml(persona.id)}" title="删除"><i class="fa-solid fa-trash"></i></button>
             </div>
         </article>`;
 }
+
 
 
 

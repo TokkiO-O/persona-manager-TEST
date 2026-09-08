@@ -374,7 +374,7 @@ body.pmp18-open {
     border: 1px solid rgba(0,0,0,.08);
     border-radius: 18px;
     background: var(--SmartThemeBlurTintColor, #fff);
-    color: var(--pmp18-ink, var(--SmartThemeBodyColor, #333));
+    color: var(--SmartThemeBodyColor, #333);
     box-shadow: 0 24px 80px rgba(0,0,0,.28);
 }
 
@@ -812,7 +812,7 @@ body.pmp18-open {
     bottom: 0; left: 0; right: 0;
     text-align: center;
     background: linear-gradient(to top, rgba(127,127,127,.18), transparent);
-    color: var(--pmp18-ink, var(--SmartThemeBodyColor, #333));
+    color: var(--SmartThemeBodyColor, #333);
     font-size: 11px;
     line-height: 18px;
     pointer-events: none;
@@ -1133,7 +1133,7 @@ mark.pmp18-add {
     display: flex;
     flex-direction: column;
     background: var(--SmartThemeBlurTintColor, #fff);
-    color: var(--pmp18-ink, var(--SmartThemeBodyColor, #333));
+    color: var(--SmartThemeBodyColor, #333);
     border-radius: 14px;
     box-shadow: 0 20px 60px rgba(0,0,0,.3);
     overflow: hidden;
@@ -2352,7 +2352,74 @@ mark.pmp18-share {
 
 
 
-/* (removed gallery card polish — caused layout/contrast fights) */
+/* ===== v1.9.25 UI polish (gallery card / empty / drawer / tabs) ===== */
+.pmp18-card {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding-top: 0 !important;
+    gap: 0 !important;
+}
+.pmp18-card-banner {
+    height: 56px;
+    margin: 0 0 -28px;
+    border-radius: 22px 22px 0 0;
+    background: linear-gradient(135deg, #FFB7B2 0%, #FFDAC1 55%, #C7CEEA 100%);
+    flex: 0 0 auto;
+    transition: transform .35s ease;
+}
+.pmp18-card:hover .pmp18-card-banner {
+    transform: scaleY(1.04);
+    transform-origin: top;
+}
+.pmp18-card > .pmp18-check {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+}
+.pmp18-card > .pmp18-avatar,
+.pmp18-card > img.pmp18-avatar,
+.pmp18-card .pmp18-avatar {
+    position: relative;
+    z-index: 1;
+    margin: 0 auto 6px !important;
+    width: 56px !important;
+    height: 56px !important;
+    flex-basis: 56px !important;
+    border: 3px solid #fff !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,.1) !important;
+}
+.pmp18-card-main {
+    padding: 4px 14px 14px !important;
+    text-align: center;
+}
+.pmp18-card-title-row {
+    justify-content: center !important;
+    flex-wrap: wrap;
+}
+.pmp18-card-sub {
+    font-size: 11px;
+    opacity: .48;
+    margin-top: 2px;
+}
+.pmp18-card-description {
+    text-align: left !important;
+    margin-top: 8px !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    max-height: 4.2em;
+    overflow: hidden;
+}
+.pmp18-card-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,.05);
+}
+
 /* Tab underline indicator */
 .pmp18-tabs {
     border-bottom: 1px solid rgba(255,183,178,.12);
@@ -2458,13 +2525,6 @@ body.pmp18-open .pmp18-selection-bar {
     border-radius: 16px !important;
     border: 1px solid rgba(0,0,0,.06) !important;
     background: var(--SmartThemeBlurTintColor, #fff) !important;
-    /* Readable ink computed from the actual rendered background luminance.
-       ST does not define --SmartThemeMainFGColor, and --SmartThemeBodyColor
-       only pairs with the blur tint in well-formed themes; when the tint is
-       missing (white fallback) the inherited body color (white in dark themes)
-       made cards white-on-white. Pin the ink here (set by applyAdaptiveInk). */
-    /* 列表卡片固定深色字+浅底，不跟酒馆主题前景色，避免白底白字 */
-    color: #1a1a1f !important;
     box-shadow: 0 4px 14px rgba(0,0,0,.04) !important;
     transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease !important;
     overflow: hidden !important;
@@ -2573,8 +2633,7 @@ body.pmp18-open .pmp18-selection-bar {
 .pmp18-editor-overlay {
     display: grid !important;
     place-items: center !important;
-    padding: max(12px, env(safe-area-inset-top)) 12px
-             max(12px, env(safe-area-inset-bottom)) 12px !important;
+    padding: 24px !important;
 }
 .pmp18-editor-overlay--drawer .pmp18-editor,
 .pmp18-editor-overlay .pmp18-editor {
@@ -2583,7 +2642,7 @@ body.pmp18-open .pmp18-selection-bar {
     top: auto !important;
     bottom: auto !important;
     width: min(480px, 92vw) !important;
-    max-height: min(88dvh, 640px) !important;
+    max-height: min(78vh, 640px) !important;
     height: auto !important;
     border-radius: 20px !important;
     margin: 0 auto !important;
@@ -2592,8 +2651,14 @@ body.pmp18-open .pmp18-selection-bar {
 
 @media (max-width: 900px) {
   .pmp18-editor-overlay .pmp18-editor {
-    max-height: min(88dvh, 640px) !important;
-    overflow-y: auto;   /* 描述过长时整体滚动，按钮始终可见 */
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-height: none !important;
+    height: 100% !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    overflow-y: auto;   /* 关键：允许整体滚动 */
   }
 }
 
@@ -2895,280 +2960,7 @@ body > .pmp18-update-overlay {
     max-height: min(70vh, 70dvh) !important;
 }
 
-
-/* ===== Fix blank white cards: guaranteed contrast on list cards ===== */
-.pmp18-card {
-    background: var(--SmartThemeBlurTintColor, #ffffff) !important;
-    color: var(--pmp18-card-ink, #1a1a1f) !important;
-}
-.pmp18-card .pmp18-card-name,
-.pmp18-card .pmp18-card-title-row,
-.pmp18-card .pmp18-card-main {
-    color: inherit !important;
-}
-.pmp18-card .pmp18-card-description {
-    color: inherit !important;
-    opacity: 0.82 !important;
-}
-.pmp18-card .pmp18-card-sub,
-.pmp18-card .pmp18-muted {
-    color: inherit !important;
-    opacity: 0.55 !important;
-}
-.pmp18-card .pmp18-avatar-fallback,
-.pmp18-card .pmp18-avatar-fallback i {
-    color: inherit !important;
-    opacity: 0.45 !important;
-}
-.pmp18-card .pmp18-icon-btn {
-    color: inherit !important;
-    opacity: 0.7 !important;
-}
-
-
-/* editor mobile center sheet — not stuck under top chrome */
-@media (max-width: 900px) {
-    .pmp18-editor-overlay {
-        align-items: center !important;
-        justify-content: center !important;
-        padding: max(12px, env(safe-area-inset-top, 0px)) 12px max(12px, env(safe-area-inset-bottom, 0px)) !important;
-        box-sizing: border-box !important;
-    }
-    .pmp18-editor {
-        width: min(100%, 520px) !important;
-        max-height: min(78dvh, 78vh) !important;
-        margin: 0 auto !important;
-        border-radius: 16px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        overflow: hidden !important;
-    }
-    .pmp18-editor-ta,
-    .pmp18-editor textarea {
-        flex: 1 1 auto !important;
-        min-height: 120px !important;
-        max-height: none !important;
-        overflow: auto !important;
-    }
-}
-
-
-/* ===== CARD CONTRAST LOCK（彻底杜绝空白卡片） ===== */
-.pmp18-card {
-    background: #ffffff !important;
-    color: #1a1a1f !important;
-}
-.pmp18-card .pmp18-card-name,
-.pmp18-card .pmp18-card-main,
-.pmp18-card .pmp18-card-title-row,
-.pmp18-card .pmp18-card-description,
-.pmp18-card .pmp18-card-sub,
-.pmp18-card .pmp18-muted,
-.pmp18-card .pmp18-badge,
-.pmp18-card .pmp18-icon-btn,
-.pmp18-card .pmp18-avatar-fallback,
-.pmp18-card .pmp18-avatar-fallback i {
-    color: #1a1a1f !important;
-}
-.pmp18-card .pmp18-card-description { opacity: 0.85 !important; }
-.pmp18-card .pmp18-card-sub,
-.pmp18-card .pmp18-muted { opacity: 0.55 !important; }
-.pmp18-card .pmp18-icon-btn { opacity: 0.75 !important; }
-.pmp18-card .pmp18-avatar-fallback { background: #f0f0f2 !important; }
-.pmp18-card .pmp18-badge {
-    background: rgba(255,183,178,.35) !important;
-    color: #b54a4a !important;
-}
-.pmp18-card .pmp18-badge-danger {
-    background: rgba(255,138,98,.25) !important;
-    color: #c45c5c !important;
-}
-
-/* 编辑器：弹窗 / 全屏 由 class 切换 */
-.pmp18-editor-overlay {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 2147483000 !important;
-    display: flex !important;
-    background: rgba(10,10,14,.45) !important;
-    box-sizing: border-box !important;
-}
-.pmp18-editor-overlay.is-popup {
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 16px !important;
-}
-.pmp18-editor-overlay.is-popup .pmp18-editor {
-    width: min(520px, calc(100vw - 32px)) !important;
-    max-height: min(80vh, 80dvh) !important;
-    height: auto !important;
-    border-radius: 16px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-}
-.pmp18-editor-overlay.is-fullscreen {
-    align-items: stretch !important;
-    justify-content: stretch !important;
-    padding: 0 !important;
-}
-.pmp18-editor-overlay.is-fullscreen .pmp18-editor {
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    border-radius: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
-.pmp18-editor-overlay .pmp18-editor-ta {
-    flex: 1 1 auto !important;
-    min-height: 140px !important;
-    overflow: auto !important;
-}
-
-.pmp18-settings-seg {
-    display: inline-flex;
-    gap: 0;
-    border-radius: 999px;
-    overflow: hidden;
-    border: 1px solid rgba(0,0,0,.08);
-    margin-top: 6px;
-}
-.pmp18-seg-btn {
-    border: 0;
-    background: rgba(127,127,127,.08);
-    color: inherit;
-    padding: 8px 16px;
-    font-size: 13px;
-    cursor: pointer;
-}
-.pmp18-seg-btn.is-on {
-    background: rgba(255,183,178,.45);
-    font-weight: 700;
-}
-
-
-/* editor actions bar lock */
-.pmp18-editor-actions {
-    display: flex !important;
-    justify-content: flex-end !important;
-    gap: 10px !important;
-    padding: 12px 16px !important;
-    flex: 0 0 auto !important;
-    border-top: 1px solid rgba(0,0,0,.06);
-}
-.pmp18-editor-actions .pmp18-small-btn,
-.pmp18-editor-actions .pmp18-primary-btn {
-    min-height: 36px;
-    min-width: 72px;
-    padding: 8px 16px !important;
-    border-radius: 10px !important;
-    font-size: 14px !important;
-}
-.pmp18-editor {
-    background: #fff !important;
-    color: #1a1a1f !important;
-}
-.pmp18-editor input,
-.pmp18-editor textarea {
-    color: #1a1a1f !important;
-    -webkit-text-fill-color: #1a1a1f !important;
-    background: #f5f5f7 !important;
-}
-
-
-
-
-/* ========== v1.10.1 列表卡片（单套规则，对齐 1.9.25 横排） ========== */
-#pmp18-root .pmp18-card-grid,
-#pmp18-root .pmp18-group-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
-}
-@media (min-width: 720px) {
-    #pmp18-root .pmp18-card-grid,
-    #pmp18-root .pmp18-group-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-}
-@media (min-width: 1100px) {
-    #pmp18-root .pmp18-card-grid,
-    #pmp18-root .pmp18-group-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    }
-}
-#pmp18-root .pmp18-card {
-    position: relative !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: flex-start !important;
-    gap: 12px !important;
-    padding: 12px !important;
-    border-radius: 14px !important;
-    border: 1px solid rgba(0,0,0,.08) !important;
-    background: #fff !important;
-    color: #1a1a1f !important;
-    -webkit-text-fill-color: #1a1a1f !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,.04) !important;
-    overflow: visible !important;
-    min-height: 72px !important;
-}
-#pmp18-root .pmp18-card-banner { display: none !important; }
-#pmp18-root .pmp18-card > .pmp18-check {
-    position: static !important;
-    flex: 0 0 auto !important;
-    margin-top: 4px !important;
-}
-#pmp18-root .pmp18-card > .pmp18-avatar,
-#pmp18-root .pmp18-card .pmp18-avatar {
-    position: static !important;
-    display: block !important;
-    width: 48px !important;
-    height: 48px !important;
-    flex: 0 0 48px !important;
-    margin: 0 !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
-    background: #eee !important;
-}
-#pmp18-root .pmp18-card .pmp18-card-main {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-    text-align: left !important;
-    color: #1a1a1f !important;
-    -webkit-text-fill-color: #1a1a1f !important;
-}
-#pmp18-root .pmp18-card .pmp18-card-name {
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    color: #1a1a1f !important;
-    -webkit-text-fill-color: #1a1a1f !important;
-}
-#pmp18-root .pmp18-card .pmp18-card-sub {
-    font-size: 11px !important;
-    color: #5a5a63 !important;
-    -webkit-text-fill-color: #5a5a63 !important;
-    margin-top: 2px !important;
-}
-#pmp18-root .pmp18-card .pmp18-card-description {
-    margin-top: 6px !important;
-    font-size: 12px !important;
-    line-height: 1.45 !important;
-    color: #2a2a32 !important;
-    -webkit-text-fill-color: #2a2a32 !important;
-    max-height: 3.6em !important;
-    overflow: hidden !important;
-}
-#pmp18-root .pmp18-card .pmp18-card-actions {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 6px !important;
-    flex: 0 0 auto !important;
-}
-
-/* 全屏编辑（对齐 1.9.25） */
+/* ========== v1.10.1 全屏编辑（在 1.9.25 样式上追加） ========== */
 .pmp18-editor-overlay.is-fullscreen {
     padding: 0 !important;
     display: flex !important;
@@ -3191,33 +2983,159 @@ body > .pmp18-update-overlay {
 }
 
 
-/* v1.10.1 layout kill-switch — 取消绝对定位勾选 + 左侧大 padding（导致内容挤到右侧） */
-#pmp18-root .pmp18-card > .pmp18-check,
-#pmp18-root .pmp18-card .pmp18-check {
-    position: static !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    margin: 2px 0 0 0 !important;
-    transform: none !important;
-}
-#pmp18-root .pmp18-card {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-}
+/* ========== v1.10.1 FINAL CARD (1.9.25 layout + readable ink) ========== */
+/* 1.9.25 用绝对定位勾选 + padding-left，不要再改成 static flex，否则会错位 */
 #pmp18-root .pmp18-card-grid,
 #pmp18-root .pmp18-group-grid {
-    overflow-x: hidden !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
     max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
 }
-#pmp18-root .pmp18-body,
-#pmp18-root .pmp18-scroll,
-#pmp18-root .pmp18-window {
-    overflow-x: hidden !important;
+@media (min-width: 900px) {
+    #pmp18-root .pmp18-card-grid,
+    #pmp18-root .pmp18-group-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+#pmp18-root .pmp18-card {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    min-width: 0 !important;
+    width: 100% !important;
     max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 12px 12px 12px 40px !important;
+    margin: 0 !important;
+    border-radius: 13px !important;
+    border: 1px solid rgba(127,127,127,.18) !important;
+    background: #ffffff !important;
+    color: #1a1a1f !important;
+    -webkit-text-fill-color: #1a1a1f !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04) !important;
+    overflow: hidden !important;
+}
+
+#pmp18-root .pmp18-card-banner { display: none !important; height: 0 !important; margin: 0 !important; }
+
+#pmp18-root .pmp18-card > .pmp18-check {
+    position: absolute !important;
+    top: 12px !important;
+    left: 10px !important;
+    z-index: 2 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#pmp18-root .pmp18-card > .pmp18-avatar,
+#pmp18-root .pmp18-card img.pmp18-avatar,
+#pmp18-root .pmp18-card .pmp18-avatar {
+    position: static !important;
+    display: block !important;
+    width: 46px !important;
+    height: 46px !important;
+    flex: 0 0 46px !important;
+    margin: 0 !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    background: rgba(127,127,127,.14) !important;
+}
+
+#pmp18-root .pmp18-card .pmp18-card-main {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-align: left !important;
+    color: #1a1a1f !important;
+    -webkit-text-fill-color: #1a1a1f !important;
+    overflow: hidden !important;
+}
+
+#pmp18-root .pmp18-card .pmp18-card-title-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+}
+
+#pmp18-root .pmp18-card .pmp18-card-name {
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    color: #1a1a1f !important;
+    -webkit-text-fill-color: #1a1a1f !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+#pmp18-root .pmp18-card .pmp18-card-sub {
+    margin-top: 2px !important;
+    font-size: 11px !important;
+    color: #666666 !important;
+    -webkit-text-fill-color: #666666 !important;
+    opacity: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+#pmp18-root .pmp18-card .pmp18-card-description {
+    margin-top: 8px !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    color: #333333 !important;
+    -webkit-text-fill-color: #333333 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    max-height: 72px !important;
+    overflow: hidden !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+}
+
+#pmp18-root .pmp18-card .pmp18-card-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+}
+
+#pmp18-root .pmp18-card .pmp18-muted {
+    color: #888 !important;
+    -webkit-text-fill-color: #888 !important;
+}
+
+/* 全屏编辑 */
+.pmp18-editor-overlay.is-fullscreen {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+}
+.pmp18-editor-overlay.is-fullscreen .pmp18-editor {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+}
+.pmp18-editor-overlay.is-fullscreen .pmp18-editor-ta {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
 }
