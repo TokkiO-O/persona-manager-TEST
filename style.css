@@ -2649,6 +2649,19 @@ body.pmp18-open .pmp18-selection-bar {
     animation: none !important;
 }
 
+@media (max-width: 900px) {
+  .pmp18-editor-overlay .pmp18-editor {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-height: none !important;
+    height: 100% !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    overflow-y: auto;   /* 关键：允许整体滚动 */
+  }
+}
+
 /* Multi-compare: focused object larger (desktop defaults; mobile overridden below) */
 .pmp18-multi-other-card {
     flex: 0 0 min(300px, 72vw);
