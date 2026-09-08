@@ -3693,3 +3693,67 @@ body > .pmp18-update-overlay {
     padding: 8px 12px 4px !important;
   }
 }
+
+
+/* ========== 桌面端对齐 1.9.25：多列网格 + 搜索统计同行 ========== */
+
+/* 列表网格：宽屏 4 列，中屏 2 列，窄屏 1 列 */
+#pmp18-root .pmp18-card-grid,
+#pmp18-root .pmp18-group-grid {
+    display: grid !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+@media (max-width: 1200px) {
+  #pmp18-root .pmp18-card-grid,
+  #pmp18-root .pmp18-group-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 900px) {
+  #pmp18-root .pmp18-card-grid,
+  #pmp18-root .pmp18-group-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 560px) {
+  #pmp18-root .pmp18-card-grid,
+  #pmp18-root .pmp18-group-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 工具栏：桌面搜索与统计同一行（左搜索右统计） */
+#pmp18-root .pmp18-toolbar {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 10px 14px !important;
+    padding: 10px 16px 6px !important;
+}
+#pmp18-root .pmp18-search {
+    flex: 1 1 220px !important;
+    max-width: 420px !important;
+    width: auto !important;
+    min-width: 160px !important;
+}
+#pmp18-root .pmp18-stats {
+    flex: 0 1 auto !important;
+    margin-left: 0 !important;
+}
+
+@media (max-width: 650px) {
+  #pmp18-root .pmp18-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  #pmp18-root .pmp18-search {
+    max-width: 100% !important;
+    width: 100% !important;
+    flex: 1 1 auto !important;
+  }
+}
