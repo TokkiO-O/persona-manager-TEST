@@ -1,7 +1,7 @@
 /** Shared constants for Persona Manager */
 
 export const EXT = 'Persona Manager';
-export const VERSION = '1.10.1';
+export const VERSION = '1.10.2';
 export const ROOT_ID = 'pmp18-root';
 export const BUTTON_ID = 'pmp18-entry';
 export const ENTRY_MARK = 'pmp18-entry-installed';

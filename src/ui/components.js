@@ -14,7 +14,7 @@ export function renderAvatar(persona) {
     const url = personaImageUrl(persona.id);
     return url
         ? `<img class="pmp18-avatar" src="${escapeHtml(url)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;pmp18-avatar pmp18-avatar-fallback&quot;><i class=&quot;fa-solid fa-user&quot;></i></div>'">`
-        : `<div class="pmp18-avatar pmp18-avatar-fallback"><i class="fa-solid fa-user"></i></div>`;
+        : `<div class="pmp18-avatar pmp18-avatar-fallback" style="color:#1a1a1f;background:#eee;display:grid;place-items:center;"><i class="fa-solid fa-user"></i></div>`;
 }
 
 function isInGroup(persona, groups) {
@@ -36,22 +36,24 @@ export function renderCard(persona, all) {
     const desc = raw
         ? escapeHtml(raw.slice(0, maxLen)) + (raw.length > maxLen ? '…' : '')
         : '<span class="pmp18-muted">暂无描述</span>';
+    // 内联字色：部分主题 CSS 优先级极高，仅靠 stylesheet 仍会出现白底白字
+    const ink = 'color:#1a1a1f;-webkit-text-fill-color:#1a1a1f;';
     return `
-        <article class="pmp18-card ${checked ? 'is-selected' : ''} density-${state.listDensity || 'comfy'}" data-persona-id="${escapeHtml(persona.id)}">
+        <article class="pmp18-card ${checked ? 'is-selected' : ''} density-${state.listDensity || 'comfy'}" data-persona-id="${escapeHtml(persona.id)}" style="background:#fff;${ink}">
             <label class="pmp18-check">
                 <input type="checkbox" data-action="select" data-id="${escapeHtml(persona.id)}" ${checked ? 'checked' : ''}>
             </label>
             ${renderAvatar(persona)}
-            <div class="pmp18-card-main">
+            <div class="pmp18-card-main" style="${ink}">
                 <div class="pmp18-card-title-row">
-                    <div class="pmp18-card-name">${escapeHtml(persona.name)}</div>
+                    <div class="pmp18-card-name" style="${ink}font-weight:700;font-size:14px;">${escapeHtml(persona.name || '未命名')}</div>
                     ${statusBadge(persona, all)}
                 </div>
-                <div class="pmp18-card-sub" title="${escapeHtml(persona.title ? `备注：${persona.title}` : `ID：${persona.id}`)}">${escapeHtml(sub)}</div>
-                <div class="pmp18-card-description">${desc}</div>
+                <div class="pmp18-card-sub" style="color:#5a5a63;-webkit-text-fill-color:#5a5a63;font-size:11px;" title="${escapeHtml(persona.title ? `备注：${persona.title}` : `ID：${persona.id}`)}">${escapeHtml(sub)}</div>
+                <div class="pmp18-card-description" style="color:#2a2a32;-webkit-text-fill-color:#2a2a32;font-size:12px;line-height:1.45;">${desc}</div>
             </div>
             <div class="pmp18-card-actions">
-                <button type="button" class="pmp18-icon-btn" data-action="edit-full" data-id="${escapeHtml(persona.id)}" title="编辑"><i class="fa-solid fa-pen"></i></button>
+                <button type="button" class="pmp18-icon-btn" data-action="edit-full" data-id="${escapeHtml(persona.id)}" title="编辑" style="color:#1a1a1f;"><i class="fa-solid fa-pen"></i></button>
                 <button type="button" class="pmp18-icon-btn pmp18-danger-icon" data-action="delete-persona" data-id="${escapeHtml(persona.id)}" title="删除"><i class="fa-solid fa-trash"></i></button>
             </div>
         </article>`;

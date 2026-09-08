@@ -273,13 +273,9 @@ function applyAdaptiveInk(root) {
     const fallbackBg = windowBg || '#ffffff';
     const ink = computeReadableInk(windowBg, fallbackBg);
     root.style.setProperty('--pmp18-ink', ink);
-    if (windowEl) windowEl.style.color = ink;
-    root.querySelectorAll('.pmp18-card, .pmp18-editor').forEach(el => {
-        const bg = getComputedStyle(el).backgroundColor;
-        // 卡片在 CSS 里默认偏浅底；半透明时按白底算对比，避免白底浅字
-        const cardInk = computeReadableInk(bg, '#ffffff');
-        el.style.setProperty('--pmp18-card-ink', cardInk);
-        el.style.color = cardInk;
+    // 列表卡片强制深色字：不写 inline color，避免覆盖内联/CSS 的可读色
+    root.querySelectorAll('.pmp18-card').forEach(el => {
+        el.style.setProperty('--pmp18-card-ink', '#1a1a1f');
     });
 }
 
@@ -571,6 +567,13 @@ export function ensureRoot() {
             return;
         }
         
+        if (action === 'set-editor-mode') {
+            const mode = String(target.dataset.mode || 'popup') === 'fullscreen' ? 'fullscreen' : 'popup';
+            state.settings.editorMode = mode;
+            saveSettingsLocal();
+            renderManager();
+            return;
+        }
         if (action === 'toggle-density') {
             state.listDensity = state.listDensity === 'compact' ? 'comfy' : 'compact';
             renderManager();
