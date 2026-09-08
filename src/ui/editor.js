@@ -47,7 +47,16 @@ export function openFullEditor(rawId) {
     // BlurTint 缺失（白兜底）时白底白字。编辑器挂在 body 下，不继承
     // #pmp18-root 上的 --pmp18-ink，需就地计算。
     ed.style.setProperty('--pmp18-ink', computeReadableInk(getComputedStyle(ed).backgroundColor));
-    if (window.visualViewport) {
+    if (mode === 'fullscreen') {
+        overlay.style.setProperty('padding', '0', 'important');
+        ed.style.setProperty('width', '100%', 'important');
+        ed.style.setProperty('height', '100%', 'important');
+        ed.style.setProperty('height', '100dvh', 'important');
+        ed.style.setProperty('max-height', '100dvh', 'important');
+        ed.style.setProperty('max-width', '100%', 'important');
+        ed.style.setProperty('border-radius', '0', 'important');
+        ed.style.setProperty('margin', '0', 'important');
+    } else if (window.visualViewport) {
         let raf = 0;
         const fit = () => {
             const vh = window.visualViewport.height;
