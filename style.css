@@ -2633,7 +2633,8 @@ body.pmp18-open .pmp18-selection-bar {
 .pmp18-editor-overlay {
     display: grid !important;
     place-items: center !important;
-    padding: 24px !important;
+    padding: max(12px, env(safe-area-inset-top)) 12px
+             max(12px, env(safe-area-inset-bottom)) 12px !important;
 }
 .pmp18-editor-overlay--drawer .pmp18-editor,
 .pmp18-editor-overlay .pmp18-editor {
@@ -2642,7 +2643,7 @@ body.pmp18-open .pmp18-selection-bar {
     top: auto !important;
     bottom: auto !important;
     width: min(480px, 92vw) !important;
-    max-height: min(78vh, 640px) !important;
+    max-height: min(88dvh, 640px) !important;
     height: auto !important;
     border-radius: 20px !important;
     margin: 0 auto !important;
@@ -2651,14 +2652,8 @@ body.pmp18-open .pmp18-selection-bar {
 
 @media (max-width: 900px) {
   .pmp18-editor-overlay .pmp18-editor {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100% !important;
-    max-height: none !important;
-    height: 100% !important;
-    height: 100dvh !important;
-    border-radius: 0 !important;
-    overflow-y: auto;   /* 关键：允许整体滚动 */
+    max-height: min(88dvh, 640px) !important;
+    overflow-y: auto;   /* 描述过长时整体滚动，按钮始终可见 */
   }
 }
 

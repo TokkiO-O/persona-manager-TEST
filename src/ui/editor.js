@@ -38,7 +38,30 @@ export function openFullEditor(rawId) {
             <p class="pmp18-editor-note">仅写入 ID：${escapeHtml(lockedId)}，不会修改其他人设。</p>
         </div>`;
 
-    const close = () => overlay.remove();
+    // 键盘弹起时用 visualViewport 收紧弹窗高度，保证底部按钮可见
+    let cleanupViewportFit = () => {};
+    const ed = overlay.querySelector('.pmp18-editor');
+    if (window.visualViewport) {
+        let raf = 0;
+        const fit = () => {
+            const vh = window.visualViewport.height;
+            const maxH = Math.min(vh - 16, 640);
+            ed.style.setProperty('max-height', `${maxH}px`, 'important');
+        };
+        const onResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); };
+        fit();
+        window.visualViewport.addEventListener('resize', onResize);
+        cleanupViewportFit = () => {
+            cancelAnimationFrame(raf);
+            window.visualViewport.removeEventListener('resize', onResize);
+            ed.style.removeProperty('max-height');
+        };
+    }
+
+    const close = () => {
+        cleanupViewportFit();
+        overlay.remove();
+    };
     overlay.querySelector('.pmp18-editor-close').onclick = close;
     overlay.querySelector('.pmp18-editor-cancel').onclick = close;
     overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
