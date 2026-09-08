@@ -1,5 +1,5 @@
 import { getPersonaData, persistPersonaFull } from '../persona-data.js';
-import { escapeHtml } from '../util.js';
+import { escapeHtml, computeReadableInk } from '../util.js';
 import { EXT } from '../constants.js';
 
 let _afterSave = () => {};
@@ -41,6 +41,10 @@ export function openFullEditor(rawId) {
     // 键盘弹起时用 visualViewport 收紧弹窗高度，保证底部按钮可见
     let cleanupViewportFit = () => {};
     const ed = overlay.querySelector('.pmp18-editor');
+    // 与卡片一致：按实际渲染背景亮度钉住可读文本色，避免深色主题下
+    // BlurTint 缺失（白兜底）时白底白字。编辑器挂在 body 下，不继承
+    // #pmp18-root 上的 --pmp18-ink，需就地计算。
+    ed.style.setProperty('--pmp18-ink', computeReadableInk(getComputedStyle(ed).backgroundColor));
     if (window.visualViewport) {
         let raf = 0;
         const fit = () => {

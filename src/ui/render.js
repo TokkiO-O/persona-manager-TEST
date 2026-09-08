@@ -1,6 +1,6 @@
 import { EXT, VERSION, ROOT_ID } from '../constants.js';
 import { state, saveSettingsLocal } from '../state.js';
-import { escapeHtml } from '../util.js';
+import { escapeHtml, computeReadableInk } from '../util.js';
 import {
     getPersonaData, deletePersonaById, confirmDeletePersona, invalidatePersonaCache, syncPersonasFromAvatarFiles
 } from '../persona-data.js';
@@ -237,6 +237,7 @@ export function renderManagerInner() {
         // v1.9.15: fold long same blocks for mobile reading
         applyFoldDefaults(root);
         bindGlobalKeys(root);
+        applyAdaptiveInk(root);
         if (focusKey) {
             const el = root.querySelector(`[data-pmp18-keep-focus="${CSS.escape(focusKey)}"]`);
             if (el) {
@@ -246,6 +247,26 @@ export function renderManagerInner() {
                 }
             }
         }
+    });
+}
+
+/**
+ * Guarantee readable text on surfaces whose background comes from ST theme
+ * variables. ST pairs --SmartThemeBodyColor with --SmartThemeBlurTintColor
+ * only for well-formed themes; when the blur tint is missing (falls back to
+ * white) while BodyColor is white (dark theme), text vanishes. Compute the
+ * actual rendered background luminance and pin the ink color (dark on light,
+ * light on dark), mirroring ST's own --SmartThemeCheckboxTickColor approach.
+ */
+function applyAdaptiveInk(root) {
+    const windowEl = root.querySelector('.pmp18-window');
+    const windowBg = windowEl ? getComputedStyle(windowEl).backgroundColor : null;
+    const fallbackBg = windowBg || '#ffffff';
+    const ink = computeReadableInk(windowBg, fallbackBg);
+    root.style.setProperty('--pmp18-ink', ink);
+    root.querySelectorAll('.pmp18-card, .pmp18-editor').forEach(el => {
+        const bg = getComputedStyle(el).backgroundColor;
+        el.style.setProperty('--pmp18-card-ink', computeReadableInk(bg, fallbackBg));
     });
 }
 

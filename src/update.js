@@ -1,6 +1,6 @@
 import { EXT, VERSION, ROOT_ID, REMOTE_MANIFEST_URLS, REMOTE_CHANGELOG_URLS } from './constants.js';
 import { state } from './state.js';
-import { escapeHtml, isRemoteNewer, compareSemver } from './util.js';
+import { escapeHtml, isRemoteNewer, compareSemver, computeReadableInk } from './util.js';
 
 
 let _uiRefresh = () => {};
@@ -275,7 +275,7 @@ export async function showUpdateModal() {
             'display:flex',
             'flex-direction:column',
             'background:var(--SmartThemeBlurTintColor, #1a1b22)',
-            'color:inherit',
+            'color:var(--pmp18-ink, inherit)',
             'box-shadow:0 12px 40px rgba(0,0,0,0.4)',
             'margin:0',
         ].join(';');
@@ -305,6 +305,7 @@ export async function showUpdateModal() {
         if (modal) {
             modal.addEventListener('click', e => e.stopPropagation());
             modal.addEventListener('touchend', e => e.stopPropagation());
+            modal.style.setProperty('--pmp18-ink', computeReadableInk(getComputedStyle(modal).backgroundColor));
         }
         const doBtn = overlay.querySelector('[data-do-update]');
         if (doBtn) {

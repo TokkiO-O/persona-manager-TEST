@@ -374,7 +374,7 @@ body.pmp18-open {
     border: 1px solid rgba(0,0,0,.08);
     border-radius: 18px;
     background: var(--SmartThemeBlurTintColor, #fff);
-    color: var(--SmartThemeBodyColor, #333);
+    color: var(--pmp18-ink, var(--SmartThemeBodyColor, #333));
     box-shadow: 0 24px 80px rgba(0,0,0,.28);
 }
 
@@ -812,7 +812,7 @@ body.pmp18-open {
     bottom: 0; left: 0; right: 0;
     text-align: center;
     background: linear-gradient(to top, rgba(127,127,127,.18), transparent);
-    color: var(--SmartThemeBodyColor, #333);
+    color: var(--pmp18-ink, var(--SmartThemeBodyColor, #333));
     font-size: 11px;
     line-height: 18px;
     pointer-events: none;
@@ -1133,7 +1133,7 @@ mark.pmp18-add {
     display: flex;
     flex-direction: column;
     background: var(--SmartThemeBlurTintColor, #fff);
-    color: var(--SmartThemeBodyColor, #333);
+    color: var(--pmp18-ink, var(--SmartThemeBodyColor, #333));
     border-radius: 14px;
     box-shadow: 0 20px 60px rgba(0,0,0,.3);
     overflow: hidden;
@@ -2525,10 +2525,12 @@ body.pmp18-open .pmp18-selection-bar {
     border-radius: 16px !important;
     border: 1px solid rgba(0,0,0,.06) !important;
     background: var(--SmartThemeBlurTintColor, #fff) !important;
-    /* Explicit text color paired with the card background (--SmartThemeBlurTintColor).
-       Without it the name/sub/description inherit the window's --SmartThemeBodyColor,
-       which is white in dark themes -> invisible white-on-white cards. */
-    color: var(--SmartThemeMainFGColor, var(--SmartThemeBodyColor, #333)) !important;
+    /* Readable ink computed from the actual rendered background luminance.
+       ST does not define --SmartThemeMainFGColor, and --SmartThemeBodyColor
+       only pairs with the blur tint in well-formed themes; when the tint is
+       missing (white fallback) the inherited body color (white in dark themes)
+       made cards white-on-white. Pin the ink here (set by applyAdaptiveInk). */
+    color: var(--pmp18-card-ink, var(--pmp18-ink, var(--SmartThemeBodyColor, #333))) !important;
     box-shadow: 0 4px 14px rgba(0,0,0,.04) !important;
     transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease !important;
     overflow: hidden !important;

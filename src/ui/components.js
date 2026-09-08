@@ -13,7 +13,7 @@ export function personaImageUrl(id) {
 export function renderAvatar(persona) {
     const url = personaImageUrl(persona.id);
     return url
-        ? `<img class="pmp18-avatar" src="${escapeHtml(url)}" alt="" loading="lazy">`
+        ? `<img class="pmp18-avatar" src="${escapeHtml(url)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;pmp18-avatar pmp18-avatar-fallback&quot;><i class=&quot;fa-solid fa-user&quot;></i></div>'">`
         : `<div class="pmp18-avatar pmp18-avatar-fallback"><i class="fa-solid fa-user"></i></div>`;
 }
 
