@@ -3189,3 +3189,35 @@ body > .pmp18-update-overlay {
     flex: 1 1 auto !important;
     min-height: 0 !important;
 }
+
+
+/* v1.10.1 layout kill-switch — 取消绝对定位勾选 + 左侧大 padding（导致内容挤到右侧） */
+#pmp18-root .pmp18-card > .pmp18-check,
+#pmp18-root .pmp18-card .pmp18-check {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 2px 0 0 0 !important;
+    transform: none !important;
+}
+#pmp18-root .pmp18-card {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+#pmp18-root .pmp18-card-grid,
+#pmp18-root .pmp18-group-grid {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+#pmp18-root .pmp18-body,
+#pmp18-root .pmp18-scroll,
+#pmp18-root .pmp18-window {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}

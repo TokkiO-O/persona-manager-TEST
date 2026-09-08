@@ -273,9 +273,20 @@ function applyAdaptiveInk(root) {
     const fallbackBg = windowBg || '#ffffff';
     const ink = computeReadableInk(windowBg, fallbackBg);
     root.style.setProperty('--pmp18-ink', ink);
-    // 列表卡片强制深色字：不写 inline color，避免覆盖内联/CSS 的可读色
+    // 列表卡片：强制名字/描述深色 + 防止整卡被撑出视口
     root.querySelectorAll('.pmp18-card').forEach(el => {
-        el.style.setProperty('--pmp18-card-ink', '#1a1a1f');
+        el.style.setProperty('color', '#1a1a1f', 'important');
+        el.style.setProperty('-webkit-text-fill-color', '#1a1a1f', 'important');
+        el.style.setProperty('max-width', '100%', 'important');
+        el.style.setProperty('width', '100%', 'important');
+        el.style.setProperty('box-sizing', 'border-box', 'important');
+        el.style.setProperty('overflow', 'hidden', 'important');
+        el.querySelectorAll('.pmp18-card-name, .pmp18-card-description, .pmp18-card-sub, .pmp18-card-main').forEach(t => {
+            t.style.setProperty('color', t.classList.contains('pmp18-card-sub') ? '#666' : '#1a1a1f', 'important');
+            t.style.setProperty('-webkit-text-fill-color', t.classList.contains('pmp18-card-sub') ? '#666' : '#1a1a1f', 'important');
+            t.style.setProperty('opacity', '1', 'important');
+            t.style.setProperty('visibility', 'visible', 'important');
+        });
     });
 }
 

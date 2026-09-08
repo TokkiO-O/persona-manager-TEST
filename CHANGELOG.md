@@ -2,8 +2,10 @@
 
 ## v1.10.1
 
+相对 **v1.9.25** 的主要更新：
+
 ### 修复
-- **列表卡片空白 / 错位**：卡片 DOM 回到 1.9.25 结构；CSS 只保留一套横排 flex，白底深字，避免多套样式互盖
+- **列表卡片空白 / 错位**：取消勾选绝对定位与左侧大 padding（内容被挤到右侧）；名字/描述行内深色 + 渲染后强制设色；卡片 max-width:100%
 - **头像不显示**：恢复 `personaImageUrl(id)`（`/thumbnail?type=persona&file=…`），不再使用空的 `persona.avatar`
 - **全屏编辑未铺满**：全屏模式不再被 `visualViewport` 限高到约 640px；`is-fullscreen` 使用 `100dvh` + 无圆角（对齐 1.9.25）
 
