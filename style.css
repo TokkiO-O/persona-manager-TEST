@@ -3386,3 +3386,51 @@ body > .pmp18-update-overlay {
     margin: 0 auto !important;
   }
 }
+
+
+/* ========== 微调：徽章贴名字 + 主色统一马卡龙 ========== */
+
+/* 名字只占文字宽度，徽章紧跟其后，不再被 flex:1 顶到最右 */
+#pmp18-root .pmp18-card .pmp18-card-title-row {
+    gap: 4px !important;
+    justify-content: flex-start !important;
+}
+#pmp18-root .pmp18-card .pmp18-card-name {
+    flex: 0 1 auto !important;
+    max-width: calc(100% - 5.5em) !important;
+}
+#pmp18-root .pmp18-card .pmp18-badge {
+    margin-left: 0 !important;
+    flex: 0 0 auto !important;
+}
+
+/* 主按钮 / 保存：与标签选中态一致的柔和桃色，不用刺眼的 #ff8a62 */
+#pmp18-root .pmp18-primary-btn,
+.pmp18-editor-actions .pmp18-primary-btn,
+.pmp18-editor-overlay .pmp18-primary-btn {
+    background: rgba(255, 183, 178, 0.45) !important;
+    border: 1px solid rgba(255, 183, 178, 0.65) !important;
+    color: #c45c5c !important;
+    -webkit-text-fill-color: #c45c5c !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
+#pmp18-root .pmp18-primary-btn:hover,
+.pmp18-editor-actions .pmp18-primary-btn:hover {
+    background: rgba(255, 183, 178, 0.65) !important;
+}
+
+/* 滑动开关选中：同标签 is-active */
+#pmp18-root .pmp18-mode-opt.is-on {
+    background: rgba(255, 183, 178, 0.55) !important;
+    color: #c45c5c !important;
+    -webkit-text-fill-color: #c45c5c !important;
+    box-shadow: none !important;
+}
+#pmp18-root .pmp18-mode-switch {
+    background: rgba(127, 127, 127, 0.08) !important;
+}
+#pmp18-root .pmp18-mode-opt:not(.is-on) {
+    color: #6b6b70 !important;
+    -webkit-text-fill-color: #6b6b70 !important;
+}
