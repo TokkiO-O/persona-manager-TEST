@@ -1,4 +1,4 @@
-/* Persona Manager — 轻甜马卡龙视觉层 (保留 ST 主题变量作底) */
+/* Persona Manager — 轻甜马卡龙视觉层（保留酒馆主题变量作底） */
 
 #pmp18-root {
     --pmp-cream: #FDFCF9;
@@ -19,7 +19,7 @@
     --pmp-shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
-/* ---------- Entry ---------- */
+/* ---------- 入口按钮 ---------- */
 .pmp18-entry {
     border-radius: var(--pmp-radius-md) !important;
     background: linear-gradient(135deg, rgba(255,183,178,.18), rgba(181,234,215,.16)) !important;
@@ -85,7 +85,7 @@
     background: rgba(255,183,178,.18) !important;
 }
 
-/* ---------- Tabs / search ---------- */
+/* ---------- 标签与搜索 ---------- */
 .pmp18-tabs {
     gap: 6px;
     padding: 8px 12px 0 !important;
@@ -114,7 +114,7 @@
     box-shadow: 0 0 0 2px rgba(181,234,215,.7) !important;
 }
 
-/* ---------- Cards ---------- */
+/* ---------- 列表卡片 ---------- */
 .pmp18-card {
     border-radius: var(--pmp-radius-lg) !important;
     border: 1px solid rgba(0,0,0,.05) !important;
@@ -154,7 +154,7 @@
     color: #b54a4a !important;
 }
 
-/* ---------- Buttons ---------- */
+/* ---------- 按钮 ---------- */
 .pmp18-primary-btn {
     border-radius: var(--pmp-radius-pill) !important;
     border: none !important;
@@ -188,7 +188,7 @@
     background: rgba(255,183,178,.2) !important;
 }
 
-/* ---------- Selection bar ---------- */
+/* ---------- 底部多选栏 ---------- */
 .pmp18-selection-bar {
     border-radius: 20px 20px 0 0 !important;
     border-top: 1px solid rgba(255,183,178,.25) !important;
@@ -197,7 +197,7 @@
     box-shadow: 0 -8px 24px rgba(255,183,178,.12);
 }
 
-/* ---------- Settings ---------- */
+/* ---------- 设置页 ---------- */
 .pmp18-settings-row input[type="range"] {
     accent-color: var(--pmp-peach) !important;
 }
@@ -220,7 +220,7 @@
     box-shadow: 0 0 0 2px rgba(181,234,215,.65) !important;
 }
 
-/* ---------- Editor / Update modal = 抽屉感 ---------- */
+/* ---------- 编辑器 / 更新弹窗（抽屉感） ---------- */
 .pmp18-editor-overlay {
     background: rgba(74,74,74,.12) !important;
     backdrop-filter: blur(6px) !important;
@@ -249,7 +249,7 @@
     background: rgba(245,245,247,.9) !important;
 }
 
-/* ---------- Compare chips / cards ---------- */
+/* ---------- 对比芯片与卡片 ---------- */
 .pmp18-base-card, .pmp18-obj-card {
     border-radius: 16px !important;
     border: 1px solid rgba(0,0,0,.06);
@@ -278,7 +278,7 @@
     border-radius: 4px;
 }
 
-/* ---------- NEW badge ---------- */
+/* ---------- NEW 角标 ---------- */
 .pmp18-new {
     display: inline-block;
     margin-left: 4px;
@@ -292,13 +292,13 @@
     vertical-align: middle;
 }
 
-/* ---------- Empty ---------- */
+/* ---------- 空状态 ---------- */
 .pmp18-empty {
     border-radius: var(--pmp-radius-lg);
     background: rgba(245,245,247,.6);
 }
 
-/* ---------- Mobile soften ---------- */
+/* ---------- 移动端柔化 ---------- */
 @media (max-width: 900px) {
     .pmp18-window {
         inset: 0 !important;
@@ -312,9 +312,9 @@
 }
 
 
-/* Persona Manager v1.8.0 */
+/* Persona Manager v1.8.0 基础样式 */
 
-/* Entry */
+/* 入口 */
 .pmp18-entry {
     display: flex !important;
     align-items: center;
@@ -330,7 +330,7 @@
 .pmp18-entry span { font-weight: 600; }
 .pmp18-entry small { margin-left: auto; opacity: .58; font-size: 11px; }
 
-/* Fallback floating entry when panel anchor is not found */
+/* 找不到面板锚点时的右下角浮动入口 */
 .pmp18-entry-float {
     position: fixed !important;
     right: 18px;
@@ -456,7 +456,7 @@ body.pmp18-open {
     padding: 18px 20px 88px;
 }
 
-/* Cards — checkbox on the left with safe gap so it never covers avatar */
+/* 卡片：左侧勾选，留出间距避免盖住头像 */
 .pmp18-card-grid, .pmp18-group-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -617,15 +617,14 @@ body.pmp18-open {
 .pmp18-settings-row label { font-weight: 600; }
 .pmp18-settings-row input[type="range"] { width: 100%; accent-color: #ff8a62; }
 
-/* ========== Compare workspace ========== */
+/* ========== 对比工作区 ========== */
 .pmp18-compare-workspace {
     flex: 1;
     min-height: 0;
     display: flex;
     flex-direction: column;
     position: relative;
-    /* v1.9.18: height the sticky header stack occupies below the topbar.
-       baseline(~52) + objects(~88) on desktop; overridden on mobile. */
+    /* v1.9.18：粘性顶栏高度（基准+对象条），用于滚动偏移 */
     --pmp18-sticky-h: 140px;
 }
 .pmp18-compare-topbar {
@@ -646,7 +645,7 @@ body.pmp18-open {
 .pmp18-compare-title span { font-size: 11px; opacity: .55; margin-top: 2px; }
 .pmp18-compare-tools { display: flex; gap: 6px; flex-wrap: wrap; }
 
-/* ===== v1.9.18 sticky-wrap: baseline + objects move together ===== */
+/* ===== v1.9.18 粘性包装：基准与对象一起滚动 ===== */
 .pmp18-sticky-wrap {
     position: sticky;
     top: 53px;  /* below the topbar */
@@ -710,7 +709,7 @@ body.pmp18-open {
 }
 .pmp18-base-card.is-active .pmp18-base-card-meta strong { color: #e8663b; }
 
-/* ===== v1.9.17 object strip: sticky below baseline, compact cards ===== */
+/* ===== v1.9.17 对象条：粘在基准下方，紧凑卡片 ===== */
 .pmp18-objects-scroll {
     display: flex;
     flex-direction: row;
@@ -772,7 +771,7 @@ body.pmp18-open {
 .pmp18-detail-vs { opacity: .35; font-size: 14px; }
 .pmp18-detail-score { margin-left: auto; font-size: 11px; opacity: .6; padding: 2px 8px; border-radius: 999px; background: rgba(127,127,127,.08); }
 
-/* Focus compare: two equal columns (default stacked on narrow, side on wide) */
+/* 双人对比：等宽双列（窄屏默认上下，宽屏左右） */
 .pmp18-focus-wrap {
     flex: 1;
     min-height: 0;
@@ -799,7 +798,7 @@ body.pmp18-open {
 }
 .pmp18-ghost { opacity: .55; font-size: 12px; }
 
-/* Folded same blocks (mobile reading aid) */
+/* 折叠相同块（移动端阅读辅助） */
 .pmp18-col-block.same.is-folded {
     max-height: 38px;
     overflow: hidden;
@@ -852,7 +851,7 @@ mark.pmp18-search-hit {
     border-radius: 2px;
 }
 
-/* Horizontal multi-compare (optional layout) */
+/* 横向多选对比（可选布局） */
 .pmp18-hscroll-wrap {
     flex: 1;
     min-height: 0;
@@ -899,15 +898,12 @@ mark.pmp18-search-hit {
     flex: 0 0 auto;
     padding: 10px 12px;
     border-bottom: 1px solid rgba(127,127,127,.1);
-    /* v1.9.17: fully opaque background so body text does NOT bleed through
-       under the sticky header (and its avatar) while scrolling. */
+    /* v1.9.17：粘性头背景不透明，避免正文透出 */
     background: var(--SmartThemeMainColor, #fff);
     display: flex;
     flex-direction: column;
     gap: 6px;
-    /* v1.9.16: sticky so the two columns keep their headers visible while
-       scrolling inside the (stacked or side-by-side) focus area. Sits below
-       the sticky stack (topbar 53 + baseline + objects). */
+    /* v1.9.16：双列头粘性，滚动时仍可见 */
     position: sticky;
     top: calc(53px + var(--pmp18-sticky-h));
     z-index: 3;
@@ -928,7 +924,7 @@ mark.pmp18-search-hit {
     border-radius: 8px;
     white-space: pre-wrap;
     word-break: break-word;
-    /* v1.9.17: keep scroll-into-view targets clear of the sticky header stack */
+    /* v1.9.17：滚动定位时避开粘性顶栏 */
     scroll-margin-top: 150px;
 }
 .pmp18-col-block.same { opacity: .7; }
@@ -1117,7 +1113,7 @@ mark.pmp18-add {
     background: rgba(255,183,77,.07);
 }
 
-/* Editor overlay */
+/* 编辑器遮罩 */
 .pmp18-editor-overlay {
     position: fixed;
     inset: 0;
@@ -1316,7 +1312,7 @@ mark.pmp18-share {
 }
 
 
-/* ===== v1.8.12 Mobile Patch ===== */
+/* ===== v1.8.12 移动端补丁 ===== */
 .pmp18-entry,
 .pmp18-entry-float,
 .pmp18-window,
@@ -1410,11 +1406,7 @@ mark.pmp18-share {
     .pmp18-check { top: 11px; left: 10px; }
     .pmp18-check input { width: 18px; height: 18px; }
 
-    /* Compare workspace: switch from fixed-height flex to scrolling layout.
-       The original used three flex:0 0 auto bars (topbar/baseline/others) on top
-       of a focus-wrap — on mobile those bars wrapped into many rows and crushed
-       the diff area. Now we let the whole workspace scroll vertically and the
-       diff body is a single column. */
+    /* 对比工作区：由固定高度 flex 改为可滚动布局 */
     .pmp18-compare-workspace {
         flex: 1 1 auto;
         min-height: 0;
@@ -1487,7 +1479,7 @@ mark.pmp18-share {
     .pmp18-legend { padding: 6px 10px; gap: 4px 8px; font-size: 10px; }
     .pmp18-legend-note { display: none; }
 
-    /* Share panel: collapse on mobile so it doesn't fill the screen with chips */
+    /* 共同片段面板：移动端收起，避免芯片占满屏 */
     .pmp18-share-panel { margin: 4px 10px 0; padding: 8px 10px; }
     .pmp18-share-list { max-height: 110px; overflow-y: auto; gap: 4px; }
     .pmp18-share-chip { font-size: 10px; padding: 2px 6px; }
@@ -1633,7 +1625,7 @@ mark.pmp18-share {
     border-top: 1px solid rgba(255,255,255,.08);
 }
 
-/* Mobile: keep update modal fully on-screen (was clipped at top) */
+/* 移动端：更新弹窗完整入屏（曾被顶部裁切） */
 @media (max-width: 900px) {
     .pmp18-update-overlay {
         align-items: flex-end;
@@ -1672,7 +1664,7 @@ mark.pmp18-share {
 }
 
 
-/* ===== v1.9.15 TOC panel + view modes ===== */
+/* ===== v1.9.15 目录面板与视图模式 ===== */
 .pmp18-toc-panel {
     position: absolute;
     top: 0; right: 0; bottom: 0;
@@ -1766,12 +1758,10 @@ mark.pmp18-share {
 }
 .pmp18-toc-chip:hover { background: rgba(100,140,255,.25); }
 
-/* ===== v1.9.15 mobile compare layout ===== */
+/* ===== v1.9.15 移动端对比布局 ===== */
 @media (max-width: 900px) {
     .pmp18-compare-workspace {
-        /* v1.9.18: let the workspace grow to its natural (content) height so
-           the outer .pmp18-content scrolls and the other column is reachable
-           by swiping down in stacked mode. */
+        /* v1.9.18：工作区按内容增高，外层统一滚动 */
         flex: none;
         min-height: 0;
         overflow: visible;
@@ -1794,7 +1784,7 @@ mark.pmp18-share {
     .pmp18-base-card .pmp18-avatar { width: 22px; height: 22px; flex: 0 0 22px; }
     .pmp18-base-card-meta small { display: none; }
 
-    /* v1.9.18: object strip inherits sticky from the wrap */
+    /* v1.9.18：对象条继承包装层粘性 */
     .pmp18-objects-strip {
         padding: 6px 12px;
         gap: 6px;
@@ -1810,15 +1800,11 @@ mark.pmp18-share {
     .pmp18-obj-card-meta strong { font-size: 11px; }
     .pmp18-obj-card-meta small { font-size: 8px; }
 
-    /* v1.9.18: hcol-head below the sticky wrap; height via variable.
-       baseline(~40) + objects(~76) ≈ 116 on mobile. */
+    /* v1.9.18：列头在粘性包装下方，高度用变量 */
     .pmp18-compare-workspace { --pmp18-sticky-h: 116px; }
     .pmp18-hcol-head { padding: 6px 10px; gap: 3px; }
 
-    /* Default mobile: stacked. v1.9.17: NO internal scroll — let the whole
-       page scroll so the other column is reachable by swiping down.
-       v1.9.18: focus-wrap must not be flex:1 (it was clamped to viewport and
-       the bottom column was unreachable); let it grow to natural height. */
+    /* 移动端默认上下排列；整页滚动，不做内部滚动 */
     .pmp18-focus-wrap {
         flex: none !important;
         height: auto !important;
@@ -1842,7 +1828,7 @@ mark.pmp18-share {
         overflow: visible;
     }
 
-    /* 'side' mode: keep side-by-side even on mobile (internal scroll) */
+    /* 左右模式：移动端也并排（内部滚动） */
     .pmp18-compare-workspace.is-side .pmp18-focus-wrap {
         flex-direction: row;
         overflow: hidden;
@@ -1868,7 +1854,7 @@ mark.pmp18-share {
 
 
 
-/* ===== Multi-compare: 左右(side) vs 上下(stacked) 必须可见不同 ===== */
+/* ===== 多选对比：左右(side) 与 上下(stacked) 必须可见不同 ===== */
 
 /* Default = 左右：基准左固定，对象横滑 */
 .pmp18-multi-body {
@@ -2145,7 +2131,7 @@ mark.pmp18-share {
 }
 
 
-/* ===== v1.9.24 chrome collapse / gap hints / summary ===== */
+/* ===== v1.9.24 顶栏折叠 / 空隙提示 / 摘要 ===== */
 .pmp18-gap-hint {
     margin: 6px 0;
     padding: 6px 10px;
@@ -2233,7 +2219,7 @@ mark.pmp18-share {
 }
 
 
-/* ===== v1.9.27 header + compare chrome polish ===== */
+/* ===== v1.9.27 顶栏与对比顶区抛光 ===== */
 .pmp18-header {
     display: flex !important;
     align-items: center !important;
@@ -2268,7 +2254,7 @@ mark.pmp18-share {
     background: rgba(255,183,178,.35);
 }
 
-/* Desktop compare: chrome collapsed by default (same as mobile) */
+/* 桌面对比：默认折叠顶区（与移动端一致） */
 .pmp18-compare-workspace.is-chrome-collapsed .pmp18-compare-chrome {
     display: none !important;
 }
@@ -2324,7 +2310,7 @@ mark.pmp18-share {
     font-weight: 600;
 }
 
-/* Stats pills */
+/* 统计胶囊 */
 .pmp18-stats {
     display: flex;
     flex-wrap: wrap;
@@ -2338,13 +2324,13 @@ mark.pmp18-share {
 }
 .pmp18-stats b { font-weight: 700; }
 
-/* Card actions softer */
+/* 卡片操作按钮柔化 */
 .pmp18-card .pmp18-small-btn {
     font-size: 12px;
     padding: 5px 12px !important;
 }
 
-/* Toolbar breathing room */
+/* 工具栏留白 */
 .pmp18-toolbar {
     gap: 12px !important;
     padding: 12px 16px 4px !important;
@@ -2352,7 +2338,7 @@ mark.pmp18-share {
 
 
 
-/* ===== v1.9.25 UI polish (gallery card / empty / drawer / tabs) ===== */
+/* ===== v1.9.25 界面抛光（画廊卡 / 空态 / 抽屉 / 标签） ===== */
 .pmp18-card {
     position: relative !important;
     display: flex !important;
@@ -2453,7 +2439,7 @@ mark.pmp18-share {
 .pmp18-empty strong { font-size: 16px; }
 .pmp18-empty span { font-size: 13px; opacity: .55; max-width: 260px; }
 
-/* Selection bar glass */
+/* 底部多选栏毛玻璃 */
 .pmp18-selection-bar {
     backdrop-filter: blur(14px) saturate(1.15) !important;
     background: rgba(253, 252, 249, 0.88) !important;
@@ -2461,11 +2447,11 @@ mark.pmp18-share {
     box-shadow: 0 -10px 30px rgba(255,183,178,.12) !important;
 }
 body.pmp18-open .pmp18-selection-bar {
-    /* keep readable on dark ST themes */
+    /* 深色酒馆主题下保持可读 */
     background: color-mix(in srgb, var(--SmartThemeBlurTintColor, #FDFCF9) 88%, transparent) !important;
 }
 
-/* Editor as right drawer on wide screens */
+/* 宽屏时编辑器为右侧抽屉 */
 @media (min-width: 720px) {
     .pmp18-editor-overlay--drawer {
         display: block !important;
@@ -2489,14 +2475,14 @@ body.pmp18-open .pmp18-selection-bar {
     to { transform: translateX(0); opacity: 1; }
 }
 
-/* Similar pair cards softer */
+/* 相似对卡片柔化 */
 .pmp18-similar-pair {
     border-radius: 18px !important;
     border: 1px solid rgba(255,183,178,.15) !important;
     box-shadow: 0 6px 18px rgba(0,0,0,.04);
 }
 
-/* Header soft gradient line */
+/* 顶栏柔和渐变 */
 .pmp18-header {
     background: linear-gradient(180deg, rgba(255,183,178,.08), transparent 70%);
 }
@@ -2512,9 +2498,9 @@ body.pmp18-open .pmp18-selection-bar {
 }
 
 
-/* ===== v1.9.25 redesign: clean list card + bar + focus enlarge ===== */
+/* ===== v1.9.25 重设计：干净列表卡 + 底栏 + 选中放大 ===== */
 
-/* Horizontal compact persona card */
+/* 横向紧凑人设卡 */
 .pmp18-card {
     position: relative !important;
     display: flex !important;
@@ -2602,7 +2588,7 @@ body.pmp18-open .pmp18-selection-bar {
     color: #c45c5c !important;
 }
 
-/* Selection bar: always above content, safe padding */
+/* 底部多选栏：始终浮于内容之上，安全区内边距 */
 .pmp18-selection-bar {
     position: sticky !important;
     bottom: 0 !important;
@@ -2629,7 +2615,7 @@ body.pmp18-open .pmp18-selection-bar {
     padding-bottom: 12px;
 }
 
-/* Editor: centered modal, not side drawer */
+/* 编辑器：居中弹窗，非侧边抽屉 */
 .pmp18-editor-overlay {
     display: grid !important;
     place-items: center !important;
@@ -2649,9 +2635,9 @@ body.pmp18-open .pmp18-selection-bar {
     animation: none !important;
 }
 
-/* mobile: only fullscreen mode fills screen; popup stays centered */
+/* 移动端：仅全屏模式铺满；弹窗保持居中 */
 
-/* Multi-compare: focused object larger (desktop defaults; mobile overridden below) */
+/* 多选对比：聚焦对象放大（桌面默认；移动端见下方） */
 .pmp18-multi-other-card {
     flex: 0 0 min(300px, 72vw);
     width: min(300px, 72vw);
@@ -2693,7 +2679,7 @@ body.pmp18-open .pmp18-selection-bar {
 }
 
 
-/* ===== v1.9.25 full UX pass ===== */
+/* ===== v1.9.25 完整体验补丁 ===== */
 .pmp18-card.density-comfy {
     padding: 16px 16px 16px 14px !important;
     gap: 14px !important;
@@ -2809,7 +2795,7 @@ mark.pmp18-flash, .pmp18-flash {
 }
 
 
-/* v1.9.25 mobile update + theme isolation */
+/* v1.9.25 移动端更新弹窗 + 主题隔离 */
 #pmp18-root .pmp18-update-overlay {
     position: fixed !important;
     inset: 0 !important;
@@ -2833,7 +2819,7 @@ mark.pmp18-flash, .pmp18-flash {
 }
 
 
-/* ===== Mobile side mode: nearly full-width cards, swipe between base & others ===== */
+/* ===== 移动端左右模式：接近全宽卡片，在基准与对象间滑动 ===== */
 @media (max-width: 900px) {
     .pmp18-content--compare .pmp18-compare-workspace.is-side .pmp18-multi-body {
         display: flex !important;
@@ -2899,7 +2885,7 @@ mark.pmp18-flash, .pmp18-flash {
 
 
 
-/* ===== Fullscreen shell (from working main + mobile full bleed) ===== */
+/* ===== 全屏壳层（可用主版本 + 移动端铺满） ===== */
 @media (max-width: 900px) {
     #pmp18-root:not([hidden]) {
         z-index: 100000;
@@ -2972,8 +2958,8 @@ body > .pmp18-update-overlay {
 }
 
 
-/* ========== v1.10.1 FINAL CARD (1.9.25 layout + readable ink) ========== */
-/* 1.9.25 用绝对定位勾选 + padding-left，不要再改成 static flex，否则会错位 */
+/* ========== v1.10.1 列表卡片最终样式（1.9.25 布局 + 可读字色） ========== */
+/* 勾选布局说明：勿与 static flex 混用以免错位 */
 #pmp18-root .pmp18-card-grid,
 #pmp18-root .pmp18-group-grid {
     display: grid !important;
@@ -3137,7 +3123,7 @@ body > .pmp18-update-overlay {
 }
 
 
-/* v1.10.1 check static — 勾选在左侧独立列，不盖名字 */
+/* v1.10.1 勾选：左侧独立列，不盖名字 */
 #pmp18-root .pmp18-check {
     position: static !important;
     top: auto !important;
@@ -3147,7 +3133,7 @@ body > .pmp18-update-overlay {
     padding-left: 12px !important;
 }
 
-/* 设置：编辑框样式分段按钮 */
+/* 设置：编辑框样式分段按钮（旧） */
 #pmp18-root .pmp18-settings-seg {
     display: flex !important;
     gap: 0 !important;
@@ -3193,7 +3179,7 @@ body > .pmp18-update-overlay {
 }
 
 
-/* ========== v1.10.1 UI 统一：弹窗编辑 / 圆钮 / 滑动开关 / 徽章 ========== */
+/* ========== v1.10.1 界面统一：弹窗编辑 / 圆钮 / 滑动开关 / 徽章 ========== */
 
 /* 弹窗模式：居中、四周留白、大圆角 */
 .pmp18-editor-overlay.is-popup {
@@ -3368,7 +3354,7 @@ body > .pmp18-update-overlay {
 }
 
 
-/* 最终覆盖：手机上弹窗也必须居中圆角，不被旧 media 盖掉 */
+/* 最终覆盖：手机上弹窗也必须居中圆角 */
 @media (max-width: 900px) {
   .pmp18-editor-overlay.is-popup {
     padding: 20px 14px !important;
@@ -3390,7 +3376,7 @@ body > .pmp18-update-overlay {
 
 /* ========== 微调：徽章贴名字 + 主色统一马卡龙 ========== */
 
-/* 名字只占文字宽度，徽章紧跟其后，不再被 flex:1 顶到最右 */
+/* 名字只占文字宽度，徽章紧跟其后 */
 #pmp18-root .pmp18-card .pmp18-card-title-row {
     gap: 4px !important;
     justify-content: flex-start !important;
@@ -3404,7 +3390,7 @@ body > .pmp18-update-overlay {
     flex: 0 0 auto !important;
 }
 
-/* 主按钮 / 保存：与标签选中态一致的柔和桃色，不用刺眼的 #ff8a62 */
+/* 主按钮 / 保存：柔和桃色 */
 #pmp18-root .pmp18-primary-btn,
 .pmp18-editor-actions .pmp18-primary-btn,
 .pmp18-editor-overlay .pmp18-primary-btn {
@@ -3420,7 +3406,7 @@ body > .pmp18-update-overlay {
     background: rgba(255, 183, 178, 0.65) !important;
 }
 
-/* 滑动开关选中：同标签 is-active */
+/* 滑动开关选中：同标签选中态 */
 #pmp18-root .pmp18-mode-opt.is-on {
     background: rgba(255, 183, 178, 0.55) !important;
     color: #c45c5c !important;
@@ -3436,7 +3422,7 @@ body > .pmp18-update-overlay {
 }
 
 
-/* ========== 舒适 / 紧凑：拉开差异（覆盖统一卡片 !important） ========== */
+/* ========== 舒适 / 紧凑：拉开差异 ========== */
 #pmp18-root .pmp18-card.density-comfy {
     padding: 14px 14px 14px 12px !important;
     gap: 12px !important;
@@ -3575,7 +3561,7 @@ body > .pmp18-update-overlay {
 #pmp18-root .pmp18-card.density-compact .pmp18-card-name {
     font-size: 13px !important;
 }
-/* 紧凑仍显示描述，约 2 行（对齐 1.9.25 截图） */
+/* 紧凑仍显示描述，约 2 行（对齐 1.9.25） */
 #pmp18-root .pmp18-card.density-compact .pmp18-card-description {
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
@@ -3602,4 +3588,108 @@ body > .pmp18-update-overlay {
 #pmp18-root .pmp18-card.density-compact .pmp18-badge {
     font-size: 9px !important;
     padding: 1px 5px !important;
+}
+
+
+/* ========== 顶栏 / 搜索 / 统计胶囊：收窄并与密度按钮对齐 ========== */
+#pmp18-root .pmp18-header {
+    padding: 10px 14px !important;
+    min-height: 52px !important;
+}
+#pmp18-root .pmp18-brand h1 {
+    font-size: 17px !important;
+}
+#pmp18-root .pmp18-brand-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 16px !important;
+    border-radius: 12px !important;
+}
+#pmp18-root .pmp18-version-btn {
+    font-size: 11px !important;
+    padding: 2px 6px !important;
+    min-height: 0 !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+#pmp18-root .pmp18-toolbar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    padding: 10px 14px 6px !important;
+}
+#pmp18-root .pmp18-search {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 360px !important; /* 搜索栏收窄，不再拉满 */
+    flex: 0 1 auto !important;
+}
+#pmp18-root .pmp18-search input,
+#pmp18-root #pmp18-search {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 8px 36px 8px 36px !important;
+    font-size: 13px !important;
+}
+
+/* 统计 + 密度：同一行、同高、同款胶囊 */
+#pmp18-root .pmp18-stats {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    max-width: 100% !important;
+}
+#pmp18-root .pmp18-stats span {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    margin: 0 !important;
+    padding: 5px 12px !important;
+    border-radius: 999px !important;
+    background: rgba(181, 234, 215, 0.35) !important;
+    border: 1px solid rgba(181, 234, 215, 0.45) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    color: #3d7a68 !important;
+    -webkit-text-fill-color: #3d7a68 !important;
+    opacity: 1 !important;
+}
+#pmp18-root .pmp18-stats span b {
+    margin: 0 !important;
+    font-weight: 700 !important;
+    color: inherit !important;
+}
+#pmp18-root .pmp18-density-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 5px 12px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(181, 234, 215, 0.55) !important;
+    background: rgba(181, 234, 215, 0.4) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    color: #3d7a68 !important;
+    -webkit-text-fill-color: #3d7a68 !important;
+    cursor: pointer !important;
+}
+
+@media (max-width: 900px) {
+  #pmp18-root .pmp18-search {
+    max-width: 100% !important; /* 手机仍可用满宽 */
+  }
+  #pmp18-root .pmp18-header {
+    padding: 8px 12px !important;
+  }
+  #pmp18-root .pmp18-toolbar {
+    padding: 8px 12px 4px !important;
+  }
 }
