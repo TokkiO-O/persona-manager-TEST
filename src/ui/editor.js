@@ -5,7 +5,7 @@ import { EXT } from '../constants.js';
 let _afterSave = () => {};
 export function setEditorAfterSave(fn) { _afterSave = typeof fn === 'function' ? fn : () => {}; }
 
-/* ---------- Editor (id locked at open) ---------- */
+/* ---------- 编辑器（打开时锁定 id，防串改） ---------- */
 
 export function openFullEditor(rawId) {
     const id = String(rawId || '');

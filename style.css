@@ -2960,3 +2960,60 @@ body > .pmp18-update-overlay {
     max-width: min(420px, calc(100vw - 48px)) !important;
     max-height: min(70vh, 70dvh) !important;
 }
+
+
+/* ===== Fix blank white cards: guaranteed contrast on list cards ===== */
+.pmp18-card {
+    background: var(--SmartThemeBlurTintColor, #ffffff) !important;
+    color: var(--pmp18-card-ink, #1a1a1f) !important;
+}
+.pmp18-card .pmp18-card-name,
+.pmp18-card .pmp18-card-title-row,
+.pmp18-card .pmp18-card-main {
+    color: inherit !important;
+}
+.pmp18-card .pmp18-card-description {
+    color: inherit !important;
+    opacity: 0.82 !important;
+}
+.pmp18-card .pmp18-card-sub,
+.pmp18-card .pmp18-muted {
+    color: inherit !important;
+    opacity: 0.55 !important;
+}
+.pmp18-card .pmp18-avatar-fallback,
+.pmp18-card .pmp18-avatar-fallback i {
+    color: inherit !important;
+    opacity: 0.45 !important;
+}
+.pmp18-card .pmp18-icon-btn {
+    color: inherit !important;
+    opacity: 0.7 !important;
+}
+
+
+/* editor mobile center sheet — not stuck under top chrome */
+@media (max-width: 900px) {
+    .pmp18-editor-overlay {
+        align-items: center !important;
+        justify-content: center !important;
+        padding: max(12px, env(safe-area-inset-top, 0px)) 12px max(12px, env(safe-area-inset-bottom, 0px)) !important;
+        box-sizing: border-box !important;
+    }
+    .pmp18-editor {
+        width: min(100%, 520px) !important;
+        max-height: min(78dvh, 78vh) !important;
+        margin: 0 auto !important;
+        border-radius: 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+    .pmp18-editor-ta,
+    .pmp18-editor textarea {
+        flex: 1 1 auto !important;
+        min-height: 120px !important;
+        max-height: none !important;
+        overflow: auto !important;
+    }
+}

@@ -29,7 +29,7 @@ function getLivePowerUser() {
     return null;
 }
 
-/* ---------- Persona read / write (id-safe) ---------- */
+/* ---------- 人设读写（按 id 安全更新） ---------- */
 
 export function getPersonaDescription(raw) {
     if (raw == null) return '';
@@ -65,7 +65,7 @@ export function getActiveAvatarId() {
     return '';
 }
 
-/* ---------- §3 Persona data — read / write / delete (with memo cache) ---------- */
+/* ---------- 人设数据：读 / 写 / 删（带缓存） ---------- */
 
 export let _personaCache = null;     // { version, items }
 export let _personaVersion = 0;

@@ -87,16 +87,25 @@ export function relativeLuminance(r, g, b) {
  */
 export function computeReadableInk(bg, fallbackBg = null) {
     let color = parseCssColor(bg);
-    if (!color) color = { r: 255, g: 255, b: 255, a: 1 };
-    if (color.a < 1) {
+    // 透明/半透明背景：按卡片实际「看起来」的底色（fallback）算，避免
+    // rgba(255,255,255,.05) 叠在深色窗上被判成深色 → 浅色字，而肉眼卡片仍偏白。
+    if (!color) {
+        color = parseCssColor(fallbackBg) || { r: 255, g: 255, b: 255, a: 1 };
+    } else if (color.a < 0.85) {
         const under = parseCssColor(fallbackBg) || { r: 255, g: 255, b: 255, a: 1 };
-        color = {
-            r: color.r * color.a + under.r * (1 - color.a),
-            g: color.g * color.a + under.g * (1 - color.a),
-            b: color.b * color.a + under.b * (1 - color.a),
-            a: 1,
-        };
+        // 若声明色本身偏亮（接近白），即使 alpha 低也按浅色底处理
+        const selfL = relativeLuminance(color.r, color.g, color.b);
+        if (selfL > 0.7) {
+            color = { r: color.r, g: color.g, b: color.b, a: 1 };
+        } else {
+            color = {
+                r: color.r * color.a + under.r * (1 - color.a),
+                g: color.g * color.a + under.g * (1 - color.a),
+                b: color.b * color.a + under.b * (1 - color.a),
+                a: 1,
+            };
+        }
     }
     const L = relativeLuminance(color.r, color.g, color.b);
-    return L > 0.5 ? '#1a1a1f' : '#f4f4f0';
+    return L > 0.45 ? '#1a1a1f' : '#f4f4f0';
 }

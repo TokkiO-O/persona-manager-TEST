@@ -12,7 +12,7 @@ function refreshUi() {
 }
 
 
-/* ---------- Updates (remote manifest + CHANGELOG.md) ---------- */
+/* ---------- 更新检查（远程 manifest + CHANGELOG） ---------- */
 
 export async function fetchText(url) {
     const sep = url.includes('?') ? '&' : '?';

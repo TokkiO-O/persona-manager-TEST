@@ -264,9 +264,13 @@ function applyAdaptiveInk(root) {
     const fallbackBg = windowBg || '#ffffff';
     const ink = computeReadableInk(windowBg, fallbackBg);
     root.style.setProperty('--pmp18-ink', ink);
+    if (windowEl) windowEl.style.color = ink;
     root.querySelectorAll('.pmp18-card, .pmp18-editor').forEach(el => {
         const bg = getComputedStyle(el).backgroundColor;
-        el.style.setProperty('--pmp18-card-ink', computeReadableInk(bg, fallbackBg));
+        // 卡片在 CSS 里默认偏浅底；半透明时按白底算对比，避免白底浅字
+        const cardInk = computeReadableInk(bg, '#ffffff');
+        el.style.setProperty('--pmp18-card-ink', cardInk);
+        el.style.color = cardInk;
     });
 }
 
@@ -350,7 +354,7 @@ function applyFoldDefaults(root) {
 }
 
 
-/* ---------- Root events ---------- */
+/* ---------- 根节点事件委托 ---------- */
 
 export function ensureRoot() {
     let root = document.getElementById(ROOT_ID);
@@ -573,19 +577,26 @@ export function ensureRoot() {
             const snip = String(target.dataset.snippet || '').trim();
             if (!snip) return;
             const rootEl = document.getElementById(ROOT_ID);
-            const scope = rootEl?.querySelector('.pmp18-multi-base-body, .pmp18-multi-other-card.is-focus .pmp18-multi-other-body') || rootEl;
-            const marks = scope?.querySelectorAll('mark') || [];
-            let found = null;
-            const head = snip.slice(0, Math.min(12, snip.length));
-            for (const m of marks) {
-                if ((m.textContent || '').includes(head) || head.includes((m.textContent || '').slice(0, 6))) {
-                    found = m; break;
-                }
-            }
-            if (found) {
-                found.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                found.classList.add('pmp18-flash');
-                setTimeout(() => found.classList.remove('pmp18-flash'), 1200);
+            if (!rootEl) return;
+            const marks = Array.from(rootEl.querySelectorAll('mark.pmp18-share, mark'));
+            const matched = marks.filter(m => {
+                const t = (m.textContent || '').replace(/\s+/g, ' ').trim();
+                return t === snip || t.includes(snip) || snip.includes(t);
+            });
+            if (!matched.length) return;
+            matched.forEach(m => {
+                m.classList.add('pmp18-toc-flash');
+                m.classList.add('pmp18-flash');
+                setTimeout(() => {
+                    m.classList.remove('pmp18-toc-flash');
+                    m.classList.remove('pmp18-flash');
+                }, 1600);
+            });
+            const inOther = matched.find(m => m.closest('.pmp18-multi-other-card, .pmp18-other-col, .pmp18-obj-card'));
+            const inBase = matched.find(m => m.closest('.pmp18-multi-base-fixed, .pmp18-base-col, .pmp18-base-card'));
+            (inOther || matched[matched.length - 1]).scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            if (inBase && inBase !== inOther) {
+                try { inBase.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch { /* ignore */ }
             }
             return;
         }
@@ -769,10 +780,28 @@ function handleTocJump(target) {
         const candidates = Array.from(blocks);
         sel = candidates[idx] || null;
     } else if (jump.startsWith('share-')) {
-        // find the mark with this snippet text
-        const marks = root.querySelectorAll('.pmp18-col-block.frag mark.pmp18-share');
+        // 按芯片文案匹配两侧所有 mark（不能只用 document 序的第 idx 个——那往往只在基准里）
+        const snippet = (target.textContent || '').replace(/\s+/g, ' ').trim();
+        const allMarks = Array.from(root.querySelectorAll('mark.pmp18-share'));
+        const matched = snippet
+            ? allMarks.filter(m => (m.textContent || '').replace(/\s+/g, ' ').trim() === snippet)
+            : [];
         const idx = parseInt(jump.slice(6), 10) || 0;
-        sel = marks[idx] || null;
+        if (matched.length) {
+            matched.forEach(m => {
+                m.classList.add('pmp18-toc-flash');
+                setTimeout(() => m.classList.remove('pmp18-toc-flash'), 1600);
+            });
+            // 优先滚到对象侧，再保证基准侧也在视野内
+            const inOther = matched.find(m => m.closest('.pmp18-multi-other-card, .pmp18-other-col, .pmp18-obj-card, [data-side="other"]'));
+            const inBase = matched.find(m => m.closest('.pmp18-multi-base-fixed, .pmp18-base-col, .pmp18-base-card, [data-side="base"]'));
+            (inOther || matched[matched.length - 1])?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            if (inBase && inBase !== inOther) {
+                try { inBase.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' }); } catch { /* ignore */ }
+            }
+            return;
+        }
+        sel = allMarks[idx] || null;
     }
     if (!sel) return;
     sel.scrollIntoView({ behavior: 'smooth', block: 'center' });

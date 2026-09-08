@@ -3,7 +3,7 @@ import { state } from './state.js';
 import { escapeHtml, normalizeText } from './util.js';
 import { similarity } from './similarity.js';
 
-/* ---------- Diff engine ---------- */
+/* ---------- 对比 / 差异引擎 ---------- */
 
 /** Short heading line: section title, not a long prose sentence */
 export function isSectionTitleLine(line) {
@@ -240,55 +240,198 @@ export function looksStructured(text) {
  *  @param {object} [opts]
  *  @param {boolean} [opts.shortMode=false] relax length floor and skip a few stopwords
  */
+/* ---------- 共同片段：按字段对齐（中英同义字段 / 同义属性值） ---------- */
+
+/** 字段名 → 规范键（眼睛/eyes 同一键；头发/hair 另一键） */
+const FIELD_CANON_MAP = [
+    // 眼睛
+    [['eyes', 'eye', 'eye color', 'eyecolor', 'eye_color', '瞳', '瞳色', '瞳孔', '眼睛', '眼珠', '虹膜'], 'eye'],
+    // 头发 / 发色
+    [['hair', 'hair color', 'haircolor', 'hair_colour', '发型', '发色', '头发', '髮型', '髮色', '头发颜色', '发型与发色'], 'hair'],
+    // 肤色
+    [['skin', 'skin color', 'skincolour', '肤色', '皮肤', '肤'], 'skin'],
+    // 身高
+    [['height', '身高', 'height_cm'], 'height'],
+    // 体重
+    [['weight', '体重', 'weight_kg'], 'weight'],
+    // 性别
+    [['gender', 'sex', '性别', 'gender_identity'], 'gender'],
+    // 年龄
+    [['age', '年龄', '年纪'], 'age'],
+    // 姓名
+    [['name', '姓名', '名字', '名称'], 'name'],
+    // 性格
+    [['personality', '性格', 'personality_traits'], 'personality'],
+];
+
+/** 常见颜色：中英互通 */
+const VALUE_SYNONYMS = [
+    [['棕色', '褐色', 'brown', 'Brunette'], 'brown'],
+    [['黑色', '黑', 'black'], 'black'],
+    [['白色', '白', 'white'], 'white'],
+    [['红色', '红', 'red'], 'red'],
+    [['蓝色', '蓝', 'blue'], 'blue'],
+    [['绿色', '绿', 'green'], 'green'],
+    [['黄色', '黄', '金', '金色', 'yellow', 'blonde', 'blond', 'gold', 'golden'], 'yellow'],
+    [['粉色', '粉', 'pink'], 'pink'],
+    [['紫色', '紫', 'purple', 'violet'], 'purple'],
+    [['灰色', '灰', 'gray', 'grey'], 'gray'],
+    [['银色', '银', 'silver'], 'silver'],
+    [['橙色', '橙', '橘', '橙色', 'orange'], 'orange'],
+    [['青色', '青', 'cyan', 'teal'], 'cyan'],
+];
+
+function canonFieldKey(raw) {
+    const k = normalizeText(String(raw || '')).toLowerCase().replace(/[\s_\-./]/g, '');
+    if (!k) return '';
+    for (const [aliases, canon] of FIELD_CANON_MAP) {
+        for (const a of aliases) {
+            const na = normalizeText(a).toLowerCase().replace(/[\s_\-./]/g, '');
+            if (k === na || k.includes(na) || na.includes(k)) return canon;
+        }
+    }
+    return k.slice(0, 16);
+}
+
+function canonValue(raw) {
+    const t = String(raw || '').trim();
+    if (!t) return '';
+    const low = t.toLowerCase();
+    for (const [aliases, canon] of VALUE_SYNONYMS) {
+        for (const a of aliases) {
+            if (t === a || low === String(a).toLowerCase()) return canon;
+        }
+    }
+    // 包含关系：发色棕色 → 仍单独处理；这里只规范化纯色词
+    for (const [aliases, canon] of VALUE_SYNONYMS) {
+        for (const a of aliases) {
+            if (t.includes(a) && t.length <= String(a).length + 2) return canon;
+        }
+    }
+    return normalizeText(t).toLowerCase();
+}
+
+/**
+ * 从文本抽出 { fieldCanon, valueRaw, valueCanon, line } 列表
+ * 支持 "eyes: brown" / "眼睛：棕色" / "发色棕色"（无冒号时用前缀归类）
+ */
+function extractFieldValues(text) {
+    const out = [];
+    const lines = String(text || '').split(/\n/);
+    for (const line of lines) {
+        const t = line.trim();
+        if (!t) continue;
+        const m = t.match(/^([^:：]{1,40})[:：]\s*(.+)$/);
+        if (m) {
+            const field = canonFieldKey(m[1]);
+            const valueRaw = m[2].trim();
+            if (!field || !valueRaw) continue;
+            out.push({ field, valueRaw, valueCanon: canonValue(valueRaw), line: t });
+            continue;
+        }
+        // 无冒号：前缀+值（发色棕色、瞳色琥珀）
+        const pref = t.match(/^([\u4e00-\u9fff]{1,6}|[A-Za-z_]{2,16})([\u4e00-\u9fffA-Za-z0-9]{1,12})$/);
+        if (pref) {
+            const field = canonFieldKey(pref[1]);
+            const valueRaw = pref[2];
+            // 仅当前缀能识别为已知字段时才采纳，避免误切普通词
+            const known = FIELD_CANON_MAP.some(([, c]) => c === field);
+            if (known && valueRaw) {
+                out.push({ field, valueRaw, valueCanon: canonValue(valueRaw), line: t });
+            }
+        }
+    }
+    return out;
+}
+
+/**
+ * 共同片段：
+ * 1) 优先：同规范字段下的同规范值（eyes 棕色 ↔ 眼睛 brown；≠ hair 棕色）
+ * 2) 其次：较长中文短语 / 带单位数字，且不与冲突字段绑定
+ * 3) 丢弃短颜色词在不同字段上的命中
+ */
 export function extractSharedSnippets(aText, bText, opts = {}) {
     const shortMode = !!opts.shortMode;
     const a = String(aText || '');
     const b = String(bText || '');
     if (!a || !b) return [];
 
-    const minLen = shortMode ? 2 : 3;
-    const candidates = new Set();
-    const pushMatches = (text, re) => {
-        const m = text.match(re) || [];
-        for (const x of m) {
-            const t0 = String(x).trim();
-            if (t0.length >= minLen) candidates.add(t0);
-        }
+    const aFields = extractFieldValues(a);
+    const bFields = extractFieldValues(b);
+    const shared = [];
+    const seen = new Set();
+
+    const push = (label) => {
+        const s = String(label || '').trim();
+        if (!s || s.length < 2 || s.length > 24) return;
+        const k = normalizeText(s);
+        if (!k || seen.has(k)) return;
+        // 被更长片段包含则跳过（稍后按长度排序再滤一次）
+        seen.add(k);
+        shared.push(s);
     };
 
-    // Measurements: number + unit only
-    pushMatches(a, /\d+(?:\.\d+)?\s*(?:cm|kg|mm|m|岁|%|斤)/gi);
-
-    // Chinese phrases (prefer these)
-    pushMatches(a, /[\u4e00-\u9fff]{2,12}/g);
-
-    // Mixed: Chinese + number like 168cm already covered; skip pure ASCII keys
-
-    const bLow = b.toLocaleLowerCase();
-    const shared = [];
-    for (const c of candidates) {
-        if (!isMeaningfulSnippet(c, minLen)) continue;
-        if (COMMON_STOPWORDS.has(c.toLocaleLowerCase())) continue;
-        if (COMMON_STOPWORDS.has(c)) continue;
-        if (b.includes(c) || bLow.includes(c.toLocaleLowerCase())) shared.push(c);
+    // --- 1) 字段对齐匹配 ---
+    for (const fa of aFields) {
+        for (const fb of bFields) {
+            if (fa.field !== fb.field) continue;
+            if (!fa.valueCanon || !fb.valueCanon) continue;
+            if (fa.valueCanon !== fb.valueCanon) continue;
+            // 展示用：优先较长的原文值；中英不同则拼成「棕/brown」感标签用较短中文或原文
+            const label = fa.valueRaw.length >= fb.valueRaw.length ? fa.valueRaw : fb.valueRaw;
+            // 避免把整个长句当片段
+            if (label.length <= 20) push(label);
+        }
     }
 
-    const seen = new Set();
+    // --- 2) 长中文短语 / 度量（不跨冲突字段）---
+    const minLen = shortMode ? 2 : 3;
+    const candidates = new Set();
+    for (const x of a.match(/\d+(?:\.\d+)?\s*(?:cm|kg|mm|m|岁|%|斤)/gi) || []) {
+        if (String(x).trim().length >= minLen) candidates.add(String(x).trim());
+    }
+    for (const x of a.match(/[\u4e00-\u9fff]{4,16}/g) || []) { // 提高到 4 字，减少「棕色」
+        candidates.add(x);
+    }
+
+    const fieldOf = (text, snip) => {
+        for (const fv of extractFieldValues(text)) {
+            if (fv.valueRaw.includes(snip) || snip.includes(fv.valueRaw)) return fv.field;
+        }
+        // 行级：含 snip 的 key:value
+        for (const line of String(text).split('\n')) {
+            if (!line.includes(snip)) continue;
+            const m = line.match(/^([^:：]{1,40})[:：]/);
+            if (m) return canonFieldKey(m[1]);
+        }
+        return '';
+    };
+
+    const bLow = b.toLocaleLowerCase();
+    for (const c of candidates) {
+        if (!isMeaningfulSnippet(c, minLen)) continue;
+        if (COMMON_STOPWORDS.has(c.toLocaleLowerCase()) || COMMON_STOPWORDS.has(c)) continue;
+        if (!(b.includes(c) || bLow.includes(c.toLocaleLowerCase()))) continue;
+        const fa = fieldOf(a, c);
+        const fb = fieldOf(b, c);
+        if (fa && fb && fa !== fb) continue; // 不同字段同词 → 丢弃
+        push(c);
+    }
+
     return shared
         .sort((x, y) => y.length - x.length)
-        .filter(s => {
+        .filter((s, _, arr) => {
             const k = normalizeText(s);
-            if (!k || seen.has(k)) return false;
-            for (const keep of seen) {
-                if (keep.includes(k) && keep !== k) return false;
+            // 去掉被更长共同片段包含的短词
+            for (const other of arr) {
+                if (other !== s && normalizeText(other).includes(k) && other.length > s.length) return false;
             }
-            seen.add(k);
             return true;
         })
         .slice(0, 24);
 }
 
-/** Drop schema keys, pure English fillers, tiny tokens */
+/** 过滤字段名、纯英文填充、过短无意义 token */
 function isMeaningfulSnippet(s, minLen) {
     const t = String(s || '').trim();
     if (t.length < minLen || t.length > 20) return false;
