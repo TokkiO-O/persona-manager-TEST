@@ -3434,3 +3434,88 @@ body > .pmp18-update-overlay {
     color: #6b6b70 !important;
     -webkit-text-fill-color: #6b6b70 !important;
 }
+
+
+/* ========== 舒适 / 紧凑：拉开差异（覆盖统一卡片 !important） ========== */
+#pmp18-root .pmp18-card.density-comfy {
+    padding: 14px 14px 14px 12px !important;
+    gap: 12px !important;
+    min-height: 110px !important;
+}
+#pmp18-root .pmp18-card.density-comfy > .pmp18-avatar,
+#pmp18-root .pmp18-card.density-comfy img.pmp18-avatar,
+#pmp18-root .pmp18-card.density-comfy .pmp18-avatar {
+    width: 52px !important;
+    height: 52px !important;
+    flex: 0 0 52px !important;
+}
+#pmp18-root .pmp18-card.density-comfy .pmp18-card-name {
+    font-size: 15px !important;
+}
+#pmp18-root .pmp18-card.density-comfy .pmp18-card-description {
+    display: block !important;
+    margin-top: 8px !important;
+    max-height: 4.8em !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
+}
+#pmp18-root .pmp18-card.density-comfy .pmp18-card-sub {
+    display: block !important;
+    font-size: 11px !important;
+}
+#pmp18-root .pmp18-card.density-comfy .pmp18-icon-btn {
+    width: 34px !important;
+    height: 34px !important;
+    flex-basis: 34px !important;
+}
+
+#pmp18-root .pmp18-card.density-compact {
+    padding: 8px 10px !important;
+    gap: 8px !important;
+    min-height: 0 !important;
+    align-items: center !important;
+}
+#pmp18-root .pmp18-card.density-compact > .pmp18-avatar,
+#pmp18-root .pmp18-card.density-compact img.pmp18-avatar,
+#pmp18-root .pmp18-card.density-compact .pmp18-avatar {
+    width: 36px !important;
+    height: 36px !important;
+    flex: 0 0 36px !important;
+}
+#pmp18-root .pmp18-card.density-compact .pmp18-card-name {
+    font-size: 13px !important;
+}
+#pmp18-root .pmp18-card.density-compact .pmp18-card-description {
+    display: none !important; /* 紧凑：不显示描述，只留名+备注 */
+}
+#pmp18-root .pmp18-card.density-compact .pmp18-card-sub {
+    display: block !important;
+    font-size: 10px !important;
+    margin-top: 1px !important;
+    opacity: .7 !important;
+}
+#pmp18-root .pmp18-card.density-compact .pmp18-icon-btn {
+    width: 28px !important;
+    height: 28px !important;
+    flex-basis: 28px !important;
+}
+#pmp18-root .pmp18-card.density-compact .pmp18-badge {
+    font-size: 9px !important;
+    padding: 1px 5px !important;
+}
+#pmp18-root .pmp18-card.density-compact > .pmp18-check {
+    margin-top: 0 !important;
+}
+
+/* 密度按钮选中感 */
+#pmp18-root .pmp18-density-btn {
+    border-radius: 999px !important;
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    background: rgba(181, 234, 215, 0.4) !important;
+    border: 1px solid rgba(181, 234, 215, 0.55) !important;
+    color: #3d7a68 !important;
+}
