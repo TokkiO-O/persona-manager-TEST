@@ -37,10 +37,11 @@ export function renderCard(persona, all) {
     const desc = raw
         ? escapeHtml(raw.slice(0, maxLen)) + (raw.length > maxLen ? '…' : '')
         : '<span class="pmp18-muted">暂无描述</span>';
+    const id = escapeHtml(persona.id);
     return `
-        <article class="pmp18-card ${checked ? 'is-selected' : ''} density-${state.listDensity || 'comfy'}" data-persona-id="${escapeHtml(persona.id)}">
+        <article class="pmp18-card ${checked ? 'is-selected' : ''} density-${state.listDensity || 'comfy'}" data-persona-id="${id}">
             <label class="pmp18-check">
-                <input type="checkbox" data-action="select" data-id="${escapeHtml(persona.id)}" ${checked ? 'checked' : ''}>
+                <input type="checkbox" data-action="select" data-id="${id}" ${checked ? 'checked' : ''}>
             </label>
             ${renderAvatar(persona)}
             <div class="pmp18-card-main">
@@ -52,11 +53,12 @@ export function renderCard(persona, all) {
                 <div class="pmp18-card-description" style="color:#333;-webkit-text-fill-color:#333">${desc}</div>
             </div>
             <div class="pmp18-card-actions">
-                <button type="button" class="pmp18-icon-btn" data-action="edit-full" data-id="${escapeHtml(persona.id)}" title="编辑"><i class="fa-solid fa-pen"></i></button>
-                <button type="button" class="pmp18-icon-btn pmp18-danger-icon" data-action="delete-persona" data-id="${escapeHtml(persona.id)}" title="删除"><i class="fa-solid fa-trash"></i></button>
+                <button type="button" class="pmp18-icon-btn" data-action="edit-full" data-id="${id}" title="编辑"><i class="fa-solid fa-pen"></i></button>
+                <button type="button" class="pmp18-icon-btn pmp18-danger-icon" data-action="delete-persona" data-id="${id}" title="删除"><i class="fa-solid fa-trash"></i></button>
             </div>
         </article>`;
 }
+
 
 
 

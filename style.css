@@ -3012,7 +3012,7 @@ body > .pmp18-update-overlay {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
-    padding: 12px 12px 12px 40px !important;
+    padding: 12px !important;
     margin: 0 !important;
     border-radius: 13px !important;
     border: 1px solid rgba(127,127,127,.18) !important;
@@ -3026,14 +3026,21 @@ body > .pmp18-update-overlay {
 #pmp18-root .pmp18-card-banner { display: none !important; height: 0 !important; margin: 0 !important; }
 
 #pmp18-root .pmp18-card > .pmp18-check {
-    position: absolute !important;
-    top: 12px !important;
-    left: 10px !important;
-    z-index: 2 !important;
-    margin: 0 !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    flex: 0 0 22px !important;
+    width: 22px !important;
+    margin: 4px 0 0 0 !important;
     display: flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     justify-content: center !important;
+    z-index: 1 !important;
+}
+#pmp18-root .pmp18-card > .pmp18-check input {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
 }
 
 #pmp18-root .pmp18-card > .pmp18-avatar,
@@ -3138,4 +3145,60 @@ body > .pmp18-update-overlay {
 .pmp18-editor-overlay.is-fullscreen .pmp18-editor-ta {
     flex: 1 1 auto !important;
     min-height: 0 !important;
+}
+
+
+/* v1.10.1 check static — 勾选在左侧独立列，不盖名字 */
+#pmp18-root .pmp18-check {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+}
+#pmp18-root .pmp18-card {
+    padding-left: 12px !important;
+}
+
+/* 设置：编辑框样式分段按钮 */
+#pmp18-root .pmp18-settings-seg {
+    display: flex !important;
+    gap: 0 !important;
+    border: 1px solid rgba(0,0,0,.12) !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    background: #f3f3f5 !important;
+}
+#pmp18-root .pmp18-seg-btn {
+    appearance: none !important;
+    border: none !important;
+    background: transparent !important;
+    color: #333 !important;
+    -webkit-text-fill-color: #333 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 8px 18px !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    line-height: 1.2 !important;
+}
+#pmp18-root .pmp18-seg-btn.is-on {
+    background: #ff8a62 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+}
+#pmp18-root .pmp18-seg-btn:not(.is-on):active {
+    background: rgba(0,0,0,.06) !important;
+}
+
+/* 徽章不要挤掉名字 */
+#pmp18-root .pmp18-card .pmp18-badge {
+    flex: 0 0 auto !important;
+    max-width: 4.5em !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 10px !important;
 }

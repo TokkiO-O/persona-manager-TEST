@@ -578,9 +578,12 @@ export function ensureRoot() {
         }
         
         if (action === 'set-editor-mode') {
-            const mode = String(target.dataset.mode || 'popup') === 'fullscreen' ? 'fullscreen' : 'popup';
+            const mode = String(target.getAttribute('data-mode') || target.dataset.mode || 'popup') === 'fullscreen' ? 'fullscreen' : 'popup';
             state.settings.editorMode = mode;
             saveSettingsLocal();
+            if (typeof toastr !== 'undefined') {
+                toastr.info(mode === 'fullscreen' ? '编辑框：全屏' : '编辑框：弹窗');
+            }
             renderManager();
             return;
         }
