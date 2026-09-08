@@ -1,0 +1,14 @@
+{
+  "display_name": "Persona Manager",
+  "loading_order": 1,
+  "requires": [],
+  "optional": [],
+  "js": "index.js",
+  "css": "style.css",
+  "author": "TokkiO-O",
+  "version": "1.9.25",
+  "description": "舒适列表；图例/共同片段常驻；键盘；同名折叠；移动缩略条。",
+  "hooks": {
+    "update": "onUpdate"
+  }
+}
