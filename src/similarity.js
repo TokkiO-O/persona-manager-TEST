@@ -36,7 +36,7 @@ export function getExactDuplicateGroups(personas) {
     if (_dupMemo?.sig === sig) return _dupMemo.groups;
     const groups = groupBy(
         personas,
-        p => `${p.nameKey}\u0000${p.descriptionKey || ''}`,
+        p => p.descriptionKey || `\0${p.id}`,
     ).filter(g => g.length > 1);
     _dupMemo = { sig, groups };
     return groups;

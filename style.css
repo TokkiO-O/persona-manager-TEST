@@ -2525,6 +2525,10 @@ body.pmp18-open .pmp18-selection-bar {
     border-radius: 16px !important;
     border: 1px solid rgba(0,0,0,.06) !important;
     background: var(--SmartThemeBlurTintColor, #fff) !important;
+    /* Explicit text color paired with the card background (--SmartThemeBlurTintColor).
+       Without it the name/sub/description inherit the window's --SmartThemeBodyColor,
+       which is white in dark themes -> invisible white-on-white cards. */
+    color: var(--SmartThemeMainFGColor, var(--SmartThemeBodyColor, #333)) !important;
     box-shadow: 0 4px 14px rgba(0,0,0,.04) !important;
     transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease !important;
     overflow: hidden !important;

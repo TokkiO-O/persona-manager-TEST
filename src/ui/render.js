@@ -350,6 +350,9 @@ export function ensureRoot() {
         const id = String(target.dataset.id2 || target.dataset.id || '');
         if (!id) return;
         if (action === 'edit-full') {
+            // Cancel any pending deferred focus-reorder so it never fires after the editor opens
+            clearTimeout(root._pmp18FocusTimer);
+            clearTimeout(root._pmp18BaselineTimer);
             // Don't bubble to click handler (which would set baseline / focus other)
             event.preventDefault();
             event.stopPropagation();
@@ -462,17 +465,49 @@ export function ensureRoot() {
         }
         if (action === 'set-baseline') {
             const id = String(target.dataset.id);
-            state.baselineId = id;
-            if (state.focusOtherId === id) state.focusOtherId = null;
-            // focus may still be valid if it remains in others
-            if (state.focusOtherId && state.focusOtherId === id) state.focusOtherId = null;
-            renderManager();
+            // A real double-click reorders the DOM on the first click, which would
+            // make the second click land on a different element and suppress the
+            // browser's dblclick. Defer the re-render so a fast second click can
+            // still be recognized as a double-click (handled by the dblclick path).
+            if (event.detail >= 2) {
+                clearTimeout(root._pmp18BaselineTimer);
+                return;
+            }
+            clearTimeout(root._pmp18BaselineTimer);
+            root._pmp18BaselineTimer = setTimeout(() => {
+                delete root._pmp18BaselineTimer;
+                if (!state.active || root.hidden) return;
+                state.baselineId = id;
+                if (state.focusOtherId === id) state.focusOtherId = null;
+                // focus may still be valid if it remains in others
+                if (state.focusOtherId && state.focusOtherId === id) state.focusOtherId = null;
+                renderManager();
+            }, 280);
             return;
         }
         if (action === 'set-focus-other') {
             const id = String(target.dataset.id);
-            state.focusOtherId = (state.focusOtherId === id) ? null : id;
-            renderManager();
+            // Cards that also carry data-dblaction must defer the focus-toggle +
+            // re-render, otherwise the first click reorders the DOM under the
+            // cursor and the browser's native dblclick never fires on the second
+            // click (it lands on a different element). Mobile thumbs have no
+            // dblaction, so keep their single-click focus immediate.
+            if (target.closest('[data-dblaction]')) {
+                if (event.detail >= 2) {
+                    clearTimeout(root._pmp18FocusTimer);
+                    return;
+                }
+                clearTimeout(root._pmp18FocusTimer);
+                root._pmp18FocusTimer = setTimeout(() => {
+                    delete root._pmp18FocusTimer;
+                    if (!state.active || root.hidden) return;
+                    state.focusOtherId = (state.focusOtherId === id) ? null : id;
+                    renderManager();
+                }, 280);
+            } else {
+                state.focusOtherId = (state.focusOtherId === id) ? null : id;
+                renderManager();
+            }
             return;
         }
         if (action === 'set-view-mode') {
@@ -781,7 +816,11 @@ export function closeManager() {
     state.baselineId = null;
     state.focusOtherId = null;
     const root = document.getElementById(ROOT_ID);
-    if (root) root.hidden = true;
+    if (root) {
+        clearTimeout(root._pmp18FocusTimer);
+        clearTimeout(root._pmp18BaselineTimer);
+        root.hidden = true;
+    }
     document.body.classList.remove('pmp18-open');
 }
 
