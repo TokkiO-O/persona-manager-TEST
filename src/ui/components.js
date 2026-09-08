@@ -32,7 +32,7 @@ export function renderCard(persona, all) {
     const checked = state.selected.has(persona.id);
     const sub = formatPersonaSubline(persona);
     const dens = state.listDensity === 'compact';
-    const maxLen = dens ? 48 : 180;
+    const maxLen = dens ? 72 : 160;
     const raw = String(persona.description || '').replace(/\s+/g, ' ').trim();
     const desc = raw
         ? escapeHtml(raw.slice(0, maxLen)) + (raw.length > maxLen ? '…' : '')
