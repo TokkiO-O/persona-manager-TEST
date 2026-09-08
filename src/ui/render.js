@@ -52,11 +52,11 @@ export function renderSettingsPanel() {
             </div>
             <div class="pmp18-settings-row">
                 <label>编辑框样式</label>
-                <div class="pmp18-settings-seg" role="group" aria-label="编辑框样式">
-                    <button type="button" class="pmp18-seg-btn ${editorMode === 'popup' ? 'is-on' : ''}" data-action="set-editor-mode" data-mode="popup">弹窗</button>
-                    <button type="button" class="pmp18-seg-btn ${editorMode === 'fullscreen' ? 'is-on' : ''}" data-action="set-editor-mode" data-mode="fullscreen">全屏</button>
+                <div class="pmp18-mode-switch" role="group" aria-label="编辑框样式">
+                    <button type="button" class="pmp18-mode-opt ${editorMode === 'popup' ? 'is-on' : ''}" data-action="set-editor-mode" data-mode="popup">弹窗</button>
+                    <button type="button" class="pmp18-mode-opt ${editorMode === 'fullscreen' ? 'is-on' : ''}" data-action="set-editor-mode" data-mode="fullscreen">全屏</button>
                 </div>
-                <div class="pmp18-muted" style="margin-top:6px;font-size:12px">全屏更接近旧版 1.9.25；弹窗居中、四周留白。</div>
+                <div class="pmp18-muted" style="margin-top:6px;font-size:12px">弹窗：居中圆角留白 · 全屏：铺满屏幕</div>
             </div>
         </div>`;
 }
@@ -581,9 +581,6 @@ export function ensureRoot() {
             const mode = String(target.getAttribute('data-mode') || target.dataset.mode || 'popup') === 'fullscreen' ? 'fullscreen' : 'popup';
             state.settings.editorMode = mode;
             saveSettingsLocal();
-            if (typeof toastr !== 'undefined') {
-                toastr.info(mode === 'fullscreen' ? '编辑框：全屏' : '编辑框：弹窗');
-            }
             renderManager();
             return;
         }

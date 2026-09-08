@@ -1493,20 +1493,20 @@ mark.pmp18-share {
     .pmp18-share-chip { font-size: 10px; padding: 2px 6px; }
     .pmp18-col-block.frag { max-height: 280px; overflow-y: auto; }
 
-    .pmp18-editor-overlay { padding: 0; }
-    .pmp18-editor {
+    /* 仅全屏模式铺满；弹窗保持居中圆角（见文末 is-popup 规则） */
+    .pmp18-editor-overlay.is-fullscreen { padding: 0; }
+    .pmp18-editor-overlay.is-fullscreen .pmp18-editor {
         width: 100%;
         height: 100%;
         height: 100dvh;
-        max-height: 100vh;
         max-height: 100dvh;
         border-radius: 0;
         display: flex;
         flex-direction: column;
     }
-    .pmp18-editor-ta { flex: 1 1 auto; min-height: 0; margin: 8px 12px; }
-    .pmp18-editor-name { margin: 4px 12px 8px; }
-    .pmp18-editor-label { margin: 4px 12px 2px; }
+    .pmp18-editor-overlay.is-popup .pmp18-editor-ta { flex: 1 1 auto; min-height: 120px; }
+    .pmp18-editor-overlay.is-popup .pmp18-editor-name { margin: 4px 16px 8px; }
+    .pmp18-editor-overlay.is-popup .pmp18-editor-label { margin: 4px 16px 2px; }
 }
 
 @media (max-width: 420px) {
@@ -2649,18 +2649,7 @@ body.pmp18-open .pmp18-selection-bar {
     animation: none !important;
 }
 
-@media (max-width: 900px) {
-  .pmp18-editor-overlay .pmp18-editor {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100% !important;
-    max-height: none !important;
-    height: 100% !important;
-    height: 100dvh !important;
-    border-radius: 0 !important;
-    overflow-y: auto;   /* 关键：允许整体滚动 */
-  }
-}
+/* mobile: only fullscreen mode fills screen; popup stays centered */
 
 /* Multi-compare: focused object larger (desktop defaults; mobile overridden below) */
 .pmp18-multi-other-card {
@@ -3201,4 +3190,199 @@ body > .pmp18-update-overlay {
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     font-size: 10px !important;
+}
+
+
+/* ========== v1.10.1 UI 统一：弹窗编辑 / 圆钮 / 滑动开关 / 徽章 ========== */
+
+/* 弹窗模式：居中、四周留白、大圆角 */
+.pmp18-editor-overlay.is-popup {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom)) !important;
+    box-sizing: border-box !important;
+    background: rgba(40, 36, 40, .28) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+}
+.pmp18-editor-overlay.is-popup .pmp18-editor {
+    position: relative !important;
+    inset: auto !important;
+    width: min(520px, 100%) !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: min(86dvh, 720px) !important;
+    margin: 0 auto !important;
+    border-radius: 22px !important;
+    border: 1px solid rgba(0,0,0,.06) !important;
+    box-shadow: 0 18px 48px rgba(0,0,0,.16) !important;
+    background: #fff !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+.pmp18-editor-overlay.is-popup .pmp18-editor-ta {
+    flex: 1 1 auto !important;
+    min-height: 160px !important;
+    max-height: none !important;
+}
+
+/* 全屏模式 */
+.pmp18-editor-overlay.is-fullscreen {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+}
+.pmp18-editor-overlay.is-fullscreen .pmp18-editor {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+}
+
+/* 编辑器内按钮：与列表主按钮一致，大圆角 */
+.pmp18-editor-actions {
+    display: flex !important;
+    gap: 10px !important;
+    justify-content: flex-end !important;
+    padding: 12px 16px 16px !important;
+    flex-shrink: 0 !important;
+}
+.pmp18-editor-actions .pmp18-small-btn,
+.pmp18-editor-actions .pmp18-primary-btn {
+    border-radius: 999px !important;
+    padding: 9px 20px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(127,127,127,.18) !important;
+    min-width: 88px !important;
+}
+.pmp18-editor-actions .pmp18-small-btn {
+    background: rgba(127,127,127,.08) !important;
+    color: #333 !important;
+}
+.pmp18-editor-actions .pmp18-primary-btn {
+    background: #ff8a62 !important;
+    border-color: #ff8a62 !important;
+    color: #fff !important;
+}
+
+/* 列表主按钮统一圆润 */
+#pmp18-root .pmp18-small-btn,
+#pmp18-root .pmp18-primary-btn {
+    border-radius: 999px !important;
+    padding: 8px 16px !important;
+    font-weight: 600 !important;
+}
+
+/* 编辑 / 删除：圆形图标钮 */
+#pmp18-root .pmp18-icon-btn {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    background: rgba(127,127,127,.1) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 34px !important;
+    padding: 0 !important;
+}
+#pmp18-root .pmp18-icon-btn:hover {
+    background: rgba(255,138,98,.2) !important;
+    color: #e8663b !important;
+}
+#pmp18-root .pmp18-icon-btn.pmp18-danger-icon:hover {
+    background: rgba(226,75,75,.15) !important;
+    color: #d94b4b !important;
+}
+#pmp18-root .pmp18-card-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+}
+
+/* 徽章：完整显示「完全重复」 */
+#pmp18-root .pmp18-card .pmp18-badge {
+    flex: 0 0 auto !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    font-size: 10px !important;
+    padding: 2px 7px !important;
+    border-radius: 99px !important;
+    line-height: 1.3 !important;
+}
+#pmp18-root .pmp18-card .pmp18-card-name {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+#pmp18-root .pmp18-card .pmp18-card-title-row {
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+}
+
+/* 设置：滑动切换（谁亮谁选中） */
+#pmp18-root .pmp18-mode-switch {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 !important;
+    width: min(240px, 100%) !important;
+    padding: 3px !important;
+    border-radius: 999px !important;
+    background: rgba(127,127,127,.1) !important;
+    border: 1px solid rgba(127,127,127,.12) !important;
+    box-sizing: border-box !important;
+}
+#pmp18-root .pmp18-mode-opt {
+    appearance: none !important;
+    border: none !important;
+    background: transparent !important;
+    color: #555 !important;
+    -webkit-text-fill-color: #555 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 8px 12px !important;
+    border-radius: 999px !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    transition: background .18s ease, color .18s ease, box-shadow .18s ease !important;
+}
+#pmp18-root .pmp18-mode-opt.is-on {
+    background: #ff8a62 !important;
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    box-shadow: 0 2px 8px rgba(255,138,98,.35) !important;
+}
+#pmp18-root .pmp18-mode-opt:not(.is-on):active {
+    background: rgba(0,0,0,.05) !important;
+}
+
+
+/* 最终覆盖：手机上弹窗也必须居中圆角，不被旧 media 盖掉 */
+@media (max-width: 900px) {
+  .pmp18-editor-overlay.is-popup {
+    padding: 20px 14px !important;
+    padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .pmp18-editor-overlay.is-popup .pmp18-editor {
+    position: relative !important;
+    inset: auto !important;
+    width: min(520px, 100%) !important;
+    height: auto !important;
+    max-height: min(82dvh, 680px) !important;
+    border-radius: 22px !important;
+    margin: 0 auto !important;
+  }
 }
