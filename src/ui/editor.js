@@ -1,6 +1,7 @@
 import { getPersonaData, persistPersonaFull } from '../persona-data.js';
 import { escapeHtml, computeReadableInk } from '../util.js';
 import { EXT } from '../constants.js';
+import { state } from '../state.js';
 
 let _afterSave = () => {};
 export function setEditorAfterSave(fn) { _afterSave = typeof fn === 'function' ? fn : () => {}; }
@@ -18,7 +19,8 @@ export function openFullEditor(rawId) {
     const lockedId = p.id;
 
     const overlay = document.createElement('div');
-    overlay.className = 'pmp18-editor-overlay';
+    const mode = state.settings?.editorMode === 'fullscreen' ? 'fullscreen' : 'popup';
+    overlay.className = `pmp18-editor-overlay is-${mode}`;
     overlay.dataset.editId = lockedId;
     overlay.innerHTML = `
         <div class="pmp18-editor">

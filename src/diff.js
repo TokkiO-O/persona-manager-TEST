@@ -315,7 +315,18 @@ function canonValue(raw) {
  * 从文本抽出 { fieldCanon, valueRaw, valueCanon, line } 列表
  * 支持 "eyes: brown" / "眼睛：棕色" / "发色棕色"（无冒号时用前缀归类）
  */
-function extractFieldValues(text) {
+/** 已知字段别名按长度从长到短，用于「发色黑色，长发」这类无冒号行 */
+function knownFieldAliases() {
+    const list = [];
+    for (const [aliases, canon] of FIELD_CANON_MAP) {
+        for (const a of aliases) list.push({ alias: String(a), canon });
+    }
+    list.sort((x, y) => y.alias.length - x.alias.length);
+    return list;
+}
+const _FIELD_ALIASES = knownFieldAliases();
+
+export function extractFieldValues(text) {
     const out = [];
     const lines = String(text || '').split(/\n/);
     for (const line of lines) {
@@ -329,16 +340,23 @@ function extractFieldValues(text) {
             out.push({ field, valueRaw, valueCanon: canonValue(valueRaw), line: t });
             continue;
         }
-        // 无冒号：前缀+值（发色棕色、瞳色琥珀）
-        const pref = t.match(/^([\u4e00-\u9fff]{1,6}|[A-Za-z_]{2,16})([\u4e00-\u9fffA-Za-z0-9]{1,12})$/);
-        if (pref) {
-            const field = canonFieldKey(pref[1]);
-            const valueRaw = pref[2];
-            // 仅当前缀能识别为已知字段时才采纳，避免误切普通词
-            const known = FIELD_CANON_MAP.some(([, c]) => c === field);
-            if (known && valueRaw) {
-                out.push({ field, valueRaw, valueCanon: canonValue(valueRaw), line: t });
+        // 无冒号：用「最长已知名」前缀切分，避免「发色黑色」被整段当成字段名
+        let hit = null;
+        for (const { alias, canon } of _FIELD_ALIASES) {
+            if (t.startsWith(alias) && t.length > alias.length) {
+                hit = { field: canon, valueRaw: t.slice(alias.length).replace(/^[:：\s]+/, '').trim() };
+                break;
             }
+            // 英文不区分大小写
+            const low = t.toLowerCase();
+            const al = alias.toLowerCase();
+            if (low.startsWith(al) && t.length > alias.length) {
+                hit = { field: canon, valueRaw: t.slice(al.length).replace(/^[:：\s]+/, '').trim() };
+                break;
+            }
+        }
+        if (hit && hit.valueRaw && hit.valueRaw.length <= 48) {
+            out.push({ field: hit.field, valueRaw: hit.valueRaw, valueCanon: canonValue(hit.valueRaw), line: t });
         }
     }
     return out;
@@ -371,16 +389,55 @@ export function extractSharedSnippets(aText, bText, opts = {}) {
         shared.push(s);
     };
 
+    /** 宽松规范化：去标点空白，便于「黑色长发」≈「黑色，长发」 */
+    const loose = (s) => normalizeText(String(s || '')).toLowerCase().replace(/[,，、;；.\s]/g, '');
+    const valuesMatch = (fa, fb) => {
+        if (fa.valueCanon && fb.valueCanon && fa.valueCanon === fb.valueCanon) return true;
+        const la = loose(fa.valueRaw);
+        const lb = loose(fb.valueRaw);
+        if (!la || !lb) return false;
+        if (la === lb) return true;
+        // 互相包含（黑色长发 vs 黑色长发微卷）
+        if (la.length >= 3 && lb.length >= 3 && (la.includes(lb) || lb.includes(la))) return true;
+        // 拆成颜色+其余：若主色相同且其余有重叠也算
+        const colorCanon = (raw) => {
+            const t = String(raw || '');
+            for (const [aliases, canon] of VALUE_SYNONYMS) {
+                for (const a of aliases) {
+                    if (t.includes(a)) return canon;
+                }
+            }
+            return '';
+        };
+        const ca = colorCanon(fa.valueRaw);
+        const cb = colorCanon(fb.valueRaw);
+        if (ca && cb && ca === cb) {
+            // 去掉颜色词后的残片再比
+            let ra = loose(fa.valueRaw), rb = loose(fb.valueRaw);
+            for (const [aliases] of VALUE_SYNONYMS) {
+                for (const a of aliases) {
+                    const n = normalizeText(a).toLowerCase().replace(/[,，、;；.\s]/g, '');
+                    if (n) { ra = ra.split(n).join(''); rb = rb.split(n).join(''); }
+                }
+            }
+            if (!ra || !rb) return true; // 纯颜色一致
+            if (ra.includes(rb) || rb.includes(ra)) return true;
+            // 双方都有「长发」等
+            if (ra.length >= 2 && rb.length >= 2 && (ra.includes(rb.slice(0, 2)) || rb.includes(ra.slice(0, 2)))) return true;
+        }
+        return false;
+    };
+
     // --- 1) 字段对齐匹配 ---
     for (const fa of aFields) {
         for (const fb of bFields) {
             if (fa.field !== fb.field) continue;
-            if (!fa.valueCanon || !fb.valueCanon) continue;
-            if (fa.valueCanon !== fb.valueCanon) continue;
-            // 展示用：优先较长的原文值；中英不同则拼成「棕/brown」感标签用较短中文或原文
-            const label = fa.valueRaw.length >= fb.valueRaw.length ? fa.valueRaw : fb.valueRaw;
-            // 避免把整个长句当片段
-            if (label.length <= 20) push(label);
+            if (!valuesMatch(fa, fb)) continue;
+            // 展示标签：取双方较「完整」的原文，截断过长
+            let label = fa.valueRaw.length >= fb.valueRaw.length ? fa.valueRaw : fb.valueRaw;
+            label = String(label).replace(/\s+/g, ' ').trim();
+            if (label.length > 24) label = label.slice(0, 24);
+            if (label.length >= 2) push(label);
         }
     }
 

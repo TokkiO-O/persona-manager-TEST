@@ -24,6 +24,7 @@ export function tabButton(key, label, icon, count) {
 export function renderSettingsPanel() {
     const t = Math.round(state.settings.similarityThreshold * 100);
     const soft = Math.round((state.settings.softMatchThreshold ?? 0.35) * 100);
+    const editorMode = state.settings.editorMode === 'fullscreen' ? 'fullscreen' : 'popup';
     const upd = state.updateInfo;
     let tip = '';
     if (upd?.available) {
@@ -48,6 +49,14 @@ export function renderSettingsPanel() {
                     <input type="checkbox" id="pmp18-same-name" ${state.settings.includeSameNameInSimilar ? 'checked' : ''}>
                     同名也参与「高度相似」检测
                 </label>
+            </div>
+            <div class="pmp18-settings-row">
+                <label>编辑框样式</label>
+                <div class="pmp18-settings-seg" role="group" aria-label="编辑框样式">
+                    <button type="button" class="pmp18-seg-btn ${editorMode === 'popup' ? 'is-on' : ''}" data-action="set-editor-mode" data-mode="popup">弹窗</button>
+                    <button type="button" class="pmp18-seg-btn ${editorMode === 'fullscreen' ? 'is-on' : ''}" data-action="set-editor-mode" data-mode="fullscreen">全屏</button>
+                </div>
+                <div class="pmp18-muted" style="margin-top:6px;font-size:12px">全屏更接近旧版 1.9.25；弹窗居中、四周留白。</div>
             </div>
         </div>`;
 }

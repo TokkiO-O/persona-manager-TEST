@@ -2530,7 +2530,8 @@ body.pmp18-open .pmp18-selection-bar {
        only pairs with the blur tint in well-formed themes; when the tint is
        missing (white fallback) the inherited body color (white in dark themes)
        made cards white-on-white. Pin the ink here (set by applyAdaptiveInk). */
-    color: var(--pmp18-card-ink, var(--pmp18-ink, var(--SmartThemeBodyColor, #333))) !important;
+    /* 列表卡片固定深色字+浅底，不跟酒馆主题前景色，避免白底白字 */
+    color: #1a1a1f !important;
     box-shadow: 0 4px 14px rgba(0,0,0,.04) !important;
     transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease !important;
     overflow: hidden !important;
@@ -3016,4 +3017,99 @@ body > .pmp18-update-overlay {
         max-height: none !important;
         overflow: auto !important;
     }
+}
+
+
+/* ===== CARD CONTRAST LOCK（彻底杜绝空白卡片） ===== */
+.pmp18-card {
+    background: #ffffff !important;
+    color: #1a1a1f !important;
+}
+.pmp18-card .pmp18-card-name,
+.pmp18-card .pmp18-card-main,
+.pmp18-card .pmp18-card-title-row,
+.pmp18-card .pmp18-card-description,
+.pmp18-card .pmp18-card-sub,
+.pmp18-card .pmp18-muted,
+.pmp18-card .pmp18-badge,
+.pmp18-card .pmp18-icon-btn,
+.pmp18-card .pmp18-avatar-fallback,
+.pmp18-card .pmp18-avatar-fallback i {
+    color: #1a1a1f !important;
+}
+.pmp18-card .pmp18-card-description { opacity: 0.85 !important; }
+.pmp18-card .pmp18-card-sub,
+.pmp18-card .pmp18-muted { opacity: 0.55 !important; }
+.pmp18-card .pmp18-icon-btn { opacity: 0.75 !important; }
+.pmp18-card .pmp18-avatar-fallback { background: #f0f0f2 !important; }
+.pmp18-card .pmp18-badge {
+    background: rgba(255,183,178,.35) !important;
+    color: #b54a4a !important;
+}
+.pmp18-card .pmp18-badge-danger {
+    background: rgba(255,138,98,.25) !important;
+    color: #c45c5c !important;
+}
+
+/* 编辑器：弹窗 / 全屏 由 class 切换 */
+.pmp18-editor-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483000 !important;
+    display: flex !important;
+    background: rgba(10,10,14,.45) !important;
+    box-sizing: border-box !important;
+}
+.pmp18-editor-overlay.is-popup {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 16px !important;
+}
+.pmp18-editor-overlay.is-popup .pmp18-editor {
+    width: min(520px, calc(100vw - 32px)) !important;
+    max-height: min(80vh, 80dvh) !important;
+    height: auto !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+.pmp18-editor-overlay.is-fullscreen {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    padding: 0 !important;
+}
+.pmp18-editor-overlay.is-fullscreen .pmp18-editor {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+.pmp18-editor-overlay .pmp18-editor-ta {
+    flex: 1 1 auto !important;
+    min-height: 140px !important;
+    overflow: auto !important;
+}
+
+.pmp18-settings-seg {
+    display: inline-flex;
+    gap: 0;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,.08);
+    margin-top: 6px;
+}
+.pmp18-seg-btn {
+    border: 0;
+    background: rgba(127,127,127,.08);
+    color: inherit;
+    padding: 8px 16px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.pmp18-seg-btn.is-on {
+    background: rgba(255,183,178,.45);
+    font-weight: 700;
 }

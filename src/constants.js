@@ -47,11 +47,13 @@ export const COMMON_STOPWORDS = new Set([
     'kg', 'cm', 'mm', '岁', '年', '月', '日',
 ]);
 
+/** editorMode: 'popup' | 'fullscreen' */
 export const defaultSettings = {
     similarityThreshold: 0.55,
     includeSameNameInSimilar: true,
     showDiffOnly: false,
     softMatchThreshold: 0.35,
+    editorMode: 'popup',
 };
 
 /** Below this total char count for BOTH sides, treat as "short persona":
